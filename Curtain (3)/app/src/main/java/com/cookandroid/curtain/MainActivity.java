@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.material.appbar.AppBarLayout;
@@ -14,6 +15,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,6 +38,8 @@ import java.util.Random;
 import me.relex.circleindicator.CircleIndicator3;
 
 public class MainActivity extends AppCompatActivity {
+
+
     AppBarLayout mAppBar;
     CollapsingToolbarLayout collapsingToolbarLayout;
     MqttAndroidClient mqttClient;
@@ -43,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout lay1, top_lay;
     MaterialButton ctr_add, ctr_sel, ctr_del, ctr_all, ctr_cancel;
     public static Context mContext;
+    Switch auto_sw;
     RecyclerView res_lv;
     RecyclerAdapter adapter;
     String id = "A12345";
@@ -89,6 +94,10 @@ public class MainActivity extends AppCompatActivity {
         res_lv = findViewById(R.id.res_lv);
         res_lv.setLayoutManager(new LinearLayoutManager(this));
         //res_lv.setNestedScrollingEnabled(true);
+
+        //자동제어 스위치
+        auto_sw = findViewById(R.id.auto_sw);
+
 
 
         //ViewPager2

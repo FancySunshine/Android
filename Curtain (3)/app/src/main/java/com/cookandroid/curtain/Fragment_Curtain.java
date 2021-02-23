@@ -1,11 +1,13 @@
 package com.cookandroid.curtain;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -25,16 +27,20 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
 
 public class Fragment_Curtain extends Fragment {
 
+    State state;
+
     TextView test, curtain_step;
-    Switch sw;
-    Slider sb;
+    Switch sw; //색상 스위치
+    Slider sb; //밝기 슬라이더
     LinearLayout ledlayout;
+    TextView ctr_state; //커튼 단계
 
     int step = 0;
 
@@ -49,13 +55,17 @@ public class Fragment_Curtain extends Fragment {
     ArrayList<String> colors = new ArrayList<>();  // Color 넣어줄 list
 
 
+
+
     public Fragment_Curtain() {
         // Required empty public constructor
+
     }
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
     }
@@ -69,6 +79,11 @@ public class Fragment_Curtain extends Fragment {
         sb = rootView.findViewById(R.id.slider);
 
 
+        state = (State) getActivity().getApplication();
+
+
+
+        //스위치 리스너
         sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -152,18 +167,37 @@ public class Fragment_Curtain extends Fragment {
 
         curtain_step = rootView.findViewById(R.id.curtain_step);
 
+        //프래그먼트 데이터 전달
+
+
         max_down = rootView.findViewById(R.id.max_down);
         down = rootView.findViewById(R.id.down);
         up = rootView.findViewById(R.id.up);
         max_up = rootView.findViewById(R.id.max_up);
 
         max_down.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceType")
             @Override
             public void onClick(View view) {
-                step = 0;
-                curtain_step.setText(String.valueOf(step) + "단계");
+                state.setStep(0);
+
+
+                ctr_state.setText(String.valueOf(state.getStep()) + "단계");
+//
+//                //프래그먼트 데이터 전달
+//                String name = (String) curtain_step.getText();
+//                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+//                Fragment_Curtain fragment1 = new Fragment_Curtain();  //프레그먼트끼리 rfgName넘기기 위한 bundle
+//                Fragment_Main fragment2 = new Fragment_Main();
+//                Bundle bundle = new Bundle();
+//                bundle.putString("Name", name);
+//                fragment2.setArguments(bundle);
+//                // 버튼을 눌렀을 때 RE-Fr자바를 탈 수 있도록 함
+//                transaction.commit(); //저장해라 commit
+
+
                 try {
-                    ((MainActivity) MainActivity.mContext).mqttClient.publish("Curtain/ctr", String.valueOf(step).getBytes(), 0, false);
+                    ((MainActivity) MainActivity.mContext).mqttClient.publish("Curtain/ctr", String.valueOf(state.getStep()).getBytes(), 0, false);
                 } catch (MqttException e) {
                     e.printStackTrace();
                 }
@@ -173,11 +207,26 @@ public class Fragment_Curtain extends Fragment {
         down.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (step - 1 > -1) {
-                    step = step - 1;
-                    curtain_step.setText(String.valueOf(step) + "단계");
+                if (state.getStep() - 1 > -1) {
+                    state.setStep(state.getStep() - 1);
+
+                    curtain_step.setText(String.valueOf(state.getStep()) + "단계");
+
+////프래그먼트 데이터 전달
+//                    String name = (String) curtain_step.getText();
+//                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+//                    Fragment_Curtain fragment1 = new Fragment_Curtain();  //프레그먼트끼리 rfgName넘기기 위한 bundle
+//                    Fragment_Main fragment2 = new Fragment_Main();
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("Name", name);
+//                    fragment2.setArguments(bundle);
+//                    fragment1.setArguments(bundle); //Name 변수 값 전달. 반드시 setArguments() 메소드를 사용하지 않으면, 받는 쪽에서 null 값으로 받음.
+//                    // 버튼을 눌렀을 때 RE-Fr자바를 탈 수 있도록 함
+//                    //transaction.replace(R.id.frame, fragment1); //프레임 레이아웃에서 프레그먼트 1로 변경(replace)해라
+//                    transaction.commit(); //저장해라 commit
+
                     try {
-                        ((MainActivity) MainActivity.mContext).mqttClient.publish("Curtain/ctr", String.valueOf(step).getBytes(), 0, false);
+                        ((MainActivity) MainActivity.mContext).mqttClient.publish("Curtain/ctr", String.valueOf(state.getStep()).getBytes(), 0, false);
                     } catch (MqttException e) {
                         e.printStackTrace();
                     }
@@ -187,11 +236,26 @@ public class Fragment_Curtain extends Fragment {
         up.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (step + 1 < 5) {
-                    step = step + 1;
-                    curtain_step.setText(String.valueOf(step) + "단계");
+                if (state.getStep() + 1 < 5) {
+                    state.setStep( state.getStep() + 1);
+                    curtain_step.setText(String.valueOf(state.getStep()) + "단계");
+
+
+
+
+//                    //프래그먼트 데이터 전달
+//                    String name = (String) curtain_step.getText();
+//                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction(); //프레그먼트끼리 rfgName넘기기 위한 bundle
+//                    Fragment_Main fragment2 = new Fragment_Main();
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("Name", name);
+//                    fragment2.setArguments(bundle);
+//                    transaction.commit();
+//
+//
+
                     try {
-                        ((MainActivity) MainActivity.mContext).mqttClient.publish("Curtain/ctr", String.valueOf(step).getBytes(), 0, false);
+                        ((MainActivity) MainActivity.mContext).mqttClient.publish("Curtain/ctr", String.valueOf(state.getStep()).getBytes(), 0, false);
                     } catch (MqttException e) {
                         e.printStackTrace();
                     }
@@ -201,10 +265,31 @@ public class Fragment_Curtain extends Fragment {
         max_up.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                step = 4;
-                curtain_step.setText(String.valueOf(step) + "단계");
+                state.setStep(4);
+
+                curtain_step.setText(String.valueOf(state.getStep()) + "단계");
+                String name = (String) curtain_step.getText();
+
+                
+
+//                FragmentTransaction ft = getFragmentManager().beginTransaction();
+//                ft.detach(Fragment_Main).attach(Fragment_Main).commit();
+
+//                //프래그먼트 데이터 전달
+//                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+//                Fragment_Curtain fragment1 = new Fragment_Curtain();  //프레그먼트끼리 rfgName넘기기 위한 bundle
+//                Fragment_Main fragment2 = new Fragment_Main();
+//                Bundle bundle = new Bundle();
+//                bundle.putString("Name", name);
+//                fragment2.setArguments(bundle);
+//                fragment1.setArguments(bundle); //Name 변수 값 전달. 반드시 setArguments() 메소드를 사용하지 않으면, 받는 쪽에서 null 값으로 받음.
+//                // 버튼을 눌렀을 때 RE-Fr자바를 탈 수 있도록 함
+//                //transaction.replace(R.id.frame, fragment1); //프레임 레이아웃에서 프레그먼트 1로 변경(replace)해라
+//                transaction.commit(); //저장해라 commit
+
+
                 try {
-                    ((MainActivity) MainActivity.mContext).mqttClient.publish("Curtain/ctr", String.valueOf(step).getBytes(), 0, false);
+                    ((MainActivity) MainActivity.mContext).mqttClient.publish("Curtain/ctr", String.valueOf(state.getStep()).getBytes(), 0, false);
                 } catch (MqttException e) {
                     e.printStackTrace();
                 }
@@ -234,6 +319,7 @@ public class Fragment_Curtain extends Fragment {
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
                 if (topic.equals("Curtain/Step")) {
+
                     curtain_step.setText(message.toString() + "단계");
                 }
             }

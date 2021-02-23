@@ -50,6 +50,32 @@
                     android:orientation="vertical"
                     app:layout_collapseMode="parallax"
                     >
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:textSize="20dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="자동제어"/>
+
+
+                        <Switch
+                            android:id="@+id/auto_sw"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:track="@drawable/switch_track_selector"
+                            android:thumb="@drawable/switch_thumb"
+                            tools:ignore="InvalidId"
+                            android:layout_marginLeft="5dp"
+                            android:checked="false"/>
+
+                    </LinearLayout>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
