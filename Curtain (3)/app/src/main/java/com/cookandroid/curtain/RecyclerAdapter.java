@@ -1,14 +1,21 @@
 package com.cookandroid.curtain;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,12 +58,34 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RecyclerAdapter.ViewHolder holder, int position) {
         try {
+            c = holder.itemView.getContext();
             JSONObject data = arr.getJSONObject(position);
             holder.res_name.setText(data.getString("Name"));
             holder.res_step.setText(data.getString("ctr") + "단계");
             holder.res_time.setText(data.getString("StartTime"));
+            
+            // 예약리스트들의 데이터를 이용하여 Reservation Activity 실행(예약리스트 수정)
+            // 커스텀 OnClick Listener를 만들어 JSONObject(data) 값을 OnClick Listener에 전달
+            holder.itemView.setOnClickListener(new OCL_with_pos(data) {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        Intent intent = new Intent(c, Reservation.class);
+                        intent.putExtra("Name", index.getString("Name"));
+                        intent.putExtra("StartTime", index.getString("StartTime"));
+                        intent.putExtra("ctr", index.getString("ctr"));
+                        intent.putExtra("dayofweek", index.getString("dayofweek"));
+                        intent.putExtra("Memo", index.getString("Memo"));
+                        // Main Activity의 함수를 이용하여 성공적으로 저장했다는 코드가 오면 예약리스트 갱신
+                        ((MainActivity) MainActivity.mContext).startActivityForResult(intent, 0);
+                    }
+                    catch (JSONException e){
+                        e.printStackTrace();
+                    }
+                }
+            });
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -155,4 +184,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
 */
+    // 커스텀 OnClick Listener 클래스 추가
+    public abstract class OCL_with_pos implements View.OnClickListener {
+        protected JSONObject index;
+        public OCL_with_pos(JSONObject index) {
+            this.index = index;
+        }
+    }
+
 }

@@ -15,6 +15,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -51,15 +52,32 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView res_lv;
     RecyclerAdapter adapter;
     String id = "A12345";
-
+    boolean all_chk = false;
     private ViewPager2 mPager;
     private FragmentStateAdapter pageAdapter;
     private int num_page = 3;
     private CircleIndicator3 mIndicator;
+    MqttCallback mqttCallback;
 
     //MaterialButton[] curtain_steps = new MaterialButton[5];
     //int mbuttonids[] = {R.id.curtain_step0, R.id.curtain_step1, R.id.curtain_step2,
     //                   R.id.curtain_step3, R.id.curtain_step4};
+    
+    
+    
+    /// Reservation Activity에서 종료 후 실행되는 부분(Main Activity의 예약리스트 갱신)
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            try {
+                mqttClient.setCallback(mqttCallback);
+                mqttClient.publish("client/connect", id.getBytes(),0, false);
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
         // 서버와 통신하기 위한 MQTT 클라이언트 생성
         Random rnd = new Random();
         int k = rnd.nextInt();
-        mqttClient = new MqttAndroidClient(this, "tcp://172.30.1.26:1883", "Android" + k);
+        mqttClient = new MqttAndroidClient(this, "tcp://172.30.1.38:1883", "Android" + k);
 
 
         try {
@@ -167,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
                         mqttClient.subscribe("Reservation/list", 0);
                         mqttClient.subscribe("Reservation/add/success", 0);
                         mqttClient.subscribe("Reservation/add/fail", 0);
-                        mqttClient.subscribe("Data", 0);
+                        //mqttClient.subscribe("Data", 0); 안쓰는 부분 주석 처리
                         mqttClient.publish("client/connect", id.getBytes(),0, false);
 
 
@@ -185,8 +203,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (MqttException e) {
             e.printStackTrace();
         }
-
-        mqttClient.setCallback(new MqttCallback() {  //클라이언트의 콜백을 처리하는부분
+        // mqttCallback을 다시 Set해야해서 변수로 따로 빼놨습니다.
+        mqttCallback = new MqttCallback() {  //클라이언트의 콜백을 처리하는부분
             @Override
             public void connectionLost(Throwable cause) {
             }
@@ -202,13 +220,16 @@ public class MainActivity extends AppCompatActivity {
                     res_lv.setAdapter(adapter);
 
                 }
+                /*
                 else if (topic.equals("Reservation/add/success")) {
                     Toast.makeText(getApplicationContext(), "예약이 성공적으로 저장되었습니다.", Toast.LENGTH_SHORT).show();
                     Reservation rs = (Reservation)Reservation.activity;
                     rs.finish();
                     mqttClient.publish("client/connect", id.getBytes(),0, false);
 
-                } else if (topic.equals("test")) {
+                } */
+                else if (topic.equals("client/refresh")) {
+
 
                 } else if (topic.equals("Data/Dis")) {
 
@@ -220,26 +241,10 @@ public class MainActivity extends AppCompatActivity {
             public void deliveryComplete(IMqttDeliveryToken token) {
 
             }
-        });
+        };
 
-        // 액션바를 올리거나 내렸을 때 이벤트 리스너 설정
-        mAppBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                collapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.AppTheme);
-
-                if (verticalOffset > -1000) {
-                    top_lay.setVisibility(LinearLayout.VISIBLE);
-                    //action.setVisibility(LinearLayout.GONE);
-                } else {
-
-//                    collapsingToolbarLayout.setTitle(navView.getMenu().findItem(navView.getSelectedItemId()).getTitle());
-                    //action.setVisibility(LinearLayout.VISIBLE);
-                    top_lay.setVisibility(LinearLayout.GONE);
-                }
-                Log.d("tag_scroll", "recycler_view current offset: " + verticalOffset);
-            }
-        });
+        // MQTT 콜백 Set
+        mqttClient.setCallback(mqttCallback);
 
         // 하단 탭에서 탭을 선택했을 때 리스너 설정
         /*
@@ -281,7 +286,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), Reservation.class);
-                startActivity(intent);
+                // Reservation Activity가 종료되었을 때 성공적으로 저장되었다는 메세지를 받기 위해 함수 수정
+                startActivityForResult(intent, 0);
             }
         });
         // 예약 삭제 버튼을 눌렀을 때 리스너 설정(추후 추가 예정)
@@ -306,6 +312,7 @@ public class MainActivity extends AppCompatActivity {
                 ctr_del.setVisibility(View.GONE);
                 ctr_cancel.setVisibility(View.GONE);
                 adapter.setCheckBoxState(false);
+                all_chk = false;
                 int count = adapter.getItemCount();
 
                 for(int i = 0; i < count; i++){
@@ -313,6 +320,29 @@ public class MainActivity extends AppCompatActivity {
                     cb.setChecked(false);
                 }
 
+            }
+        });
+        ctr_all.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 모두 선택 클릭시 모두 선택하거나 모두 해제
+                int count = adapter.getItemCount();
+
+                if(!all_chk){
+                    for(int i = 0; i < count; i++) {
+                        CheckBox cb = res_lv.getChildAt(i).findViewById(R.id.res_chk);
+                        cb.setChecked(true);
+                        all_chk = true;
+                    }
+
+                }
+                else{
+                    for(int i = 0; i < count; i++) {
+                        CheckBox cb = res_lv.getChildAt(i).findViewById(R.id.res_chk);
+                        cb.setChecked(false);
+                        all_chk = false;
+                    }
+                }
             }
         });
 

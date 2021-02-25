@@ -304,7 +304,6 @@ public class Fragment_Curtain extends Fragment {
         test = rootView.findViewById(R.id.test);
 
         try {
-            ((MainActivity) MainActivity.mContext).mqttClient.subscribe("test", 0);
             ((MainActivity) MainActivity.mContext).mqttClient.publish("client/connect/step", "".getBytes(), 0, false);
 
         } catch (MqttException e) {
