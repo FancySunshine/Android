@@ -7,6 +7,12 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class ControlAdapter extends FragmentStateAdapter {
     public int mCount;
+    Fragment[] frags = new Fragment[]{
+            new Fragment_Main(),
+            new Fragment_Curtain(),
+            new Fragment_LED()
+    };
+
     public ControlAdapter(@NonNull FragmentActivity fragmentActivity, int count) {
         super(fragmentActivity);
         mCount = count;
@@ -15,18 +21,8 @@ public class ControlAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        if(position == 0){
-            return new Fragment_Main();
-        }
-        else if(position == 1){
-            return new Fragment_Curtain();
-        }
-        else {
-            return new Fragment_Auto();
-        }
+        return frags[position];
     }
-
-
 
     @Override
     public int getItemCount() {

@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.Slider;
+import com.squareup.otto.Subscribe;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -41,7 +42,6 @@ public class Fragment_Curtain extends Fragment {
     Slider sb; //밝기 슬라이더
     LinearLayout ledlayout;
     TextView ctr_state; //커튼 단계
-
     int step = 0;
 
     MaterialButton[] curtain_steps = new MaterialButton[5];
@@ -56,17 +56,10 @@ public class Fragment_Curtain extends Fragment {
 
 
 
-
-    public Fragment_Curtain() {
-        // Required empty public constructor
-
-    }
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+        BusProvider.getInstance().register(this);
 
     }
 
@@ -302,7 +295,7 @@ public class Fragment_Curtain extends Fragment {
 
 
         test = rootView.findViewById(R.id.test);
-
+/*
         try {
             ((MainActivity) MainActivity.mContext).mqttClient.publish("client/connect/step", "".getBytes(), 0, false);
 
@@ -318,9 +311,9 @@ public class Fragment_Curtain extends Fragment {
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
                 if (topic.equals("Curtain/Step")) {
-
                     curtain_step.setText(message.toString() + "단계");
                 }
+
             }
 
             @Override
@@ -328,7 +321,23 @@ public class Fragment_Curtain extends Fragment {
 
             }
         });
+        
+ */
 
         return rootView;
     }
+
+    @Subscribe
+    public void busStop(BusEvent busEvent) {
+        if(busEvent.flag != null) {
+            curtain_step.setText(busEvent.flag);
+        }
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        BusProvider.getInstance().unregister(this);
+
+    }
+
 }

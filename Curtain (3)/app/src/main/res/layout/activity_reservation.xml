@@ -234,7 +234,7 @@
 
                 <include
                     android:id="@+id/led_layout"
-                    layout="@layout/fragment_auto"
+                    layout="@layout/fragment_led"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 

@@ -1,24 +1,30 @@
 package com.cookandroid.curtain;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
+import com.squareup.otto.Bus;
+import com.squareup.otto.ThreadEnforcer;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -35,6 +41,8 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import me.relex.circleindicator.CircleIndicator3;
@@ -59,13 +67,14 @@ public class MainActivity extends AppCompatActivity {
     private int num_page = 3;
     private CircleIndicator3 mIndicator;
     MqttCallback mqttCallback;
-
+    Fragment_Main fm;
+    State state = new State();
     //MaterialButton[] curtain_steps = new MaterialButton[5];
     //int mbuttonids[] = {R.id.curtain_step0, R.id.curtain_step1, R.id.curtain_step2,
     //                   R.id.curtain_step3, R.id.curtain_step4};
     
-    
-    
+    String test = "";
+
     /// Reservation Activity에서 종료 후 실행되는 부분(Main Activity의 예약리스트 갱신)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -117,66 +126,12 @@ public class MainActivity extends AppCompatActivity {
         //자동제어 스위치
         auto_sw = findViewById(R.id.auto_sw);
 
+        fm = (Fragment_Main) getSupportFragmentManager().findFragmentById(R.id.frag_curtain);
 
-
-        //ViewPager2
-        mPager = findViewById(R.id.viewpager);
-        pageAdapter = new ControlAdapter(this, num_page);
-        mPager.setAdapter(pageAdapter);
-        mIndicator = findViewById(R.id.indicator);
-        mIndicator.setViewPager(mPager);
-        mIndicator.createIndicators(num_page, 0);
-        mPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
-        mPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
-                if (positionOffsetPixels == 0) {
-                    mPager.setCurrentItem(position);
-                }
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                mIndicator.animatePageSelected(position);
-                if(position == 0){
-                    //프래그먼트 새로고침
-//                    FragmentTransaction ft = getParentFragmentManager().beginTransaction();
-//                    ft.detach(this).attach(this).commit();
-                }
-
-            }
-        });
-
-
-
-/*
-        for(int i = 0; i < curtain_steps.length; i++){
-            curtain_steps[i] = findViewById(mbuttonids[i]);
-            final int finalI = i;
-            curtain_steps[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    try {
-                        mqttClient.publish("Curtain/ctr", String.valueOf(finalI).getBytes(), 0, false);
-                    } catch (MqttException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
-        */
-
-        // 메인 탭화면 설정(curtain)
-        lay1.setVisibility(LinearLayout.VISIBLE);
-
-        //action.setVisibility(LinearLayout.VISIBLE);
-
-        // 서버와 통신하기 위한 MQTT 클라이언트 생성
+// 서버와 통신하기 위한 MQTT 클라이언트 생성
         Random rnd = new Random();
         int k = rnd.nextInt();
-        mqttClient = new MqttAndroidClient(this, "tcp://172.30.1.38:1883", "Android" + k);
+        mqttClient = new MqttAndroidClient(this, "tcp://172.16.109.245:1883", "Android" + k);
 
 
         try {
@@ -193,7 +148,9 @@ public class MainActivity extends AppCompatActivity {
                         mqttClient.subscribe("Reservation/list", 0);
                         mqttClient.subscribe("Reservation/add/success", 0);
                         mqttClient.subscribe("Reservation/add/fail", 0);
-                        //mqttClient.subscribe("Data", 0); 안쓰는 부분 주석 처리
+                        mqttClient.subscribe("Reservation/del/success", 0);
+                        mqttClient.subscribe("Reservation/del/fail", 0);
+                        mqttClient.subscribe("test", 0);
                         mqttClient.publish("client/connect", id.getBytes(),0, false);
 
 
@@ -236,12 +193,16 @@ public class MainActivity extends AppCompatActivity {
                     mqttClient.publish("client/connect", id.getBytes(),0, false);
 
                 } */
-                else if (topic.equals("client/refresh")) {
-
-
-                } else if (topic.equals("Data/Dis")) {
-
-
+                else if (topic.equals("test")) {
+                    test = message.toString();
+                    BusProvider.getInstance().post(new BusEvent(test));
+                }
+                else if (topic.equals("Reservation/del/success")) {
+                    Toast.makeText(getApplicationContext(), "선택한 예약이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                    mqttClient.publish("client/connect", id.getBytes(),0, false);
+                }
+                else if(topic.equals("Reservation/del/fail")){
+                    Toast.makeText(getApplicationContext(), "예약 삭제에 실패했습니다.", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -253,6 +214,56 @@ public class MainActivity extends AppCompatActivity {
 
         // MQTT 콜백 Set
         mqttClient.setCallback(mqttCallback);
+        //ViewPager2
+        mPager = findViewById(R.id.viewpager);
+        pageAdapter = new ControlAdapter(this, num_page);
+        mPager.setAdapter(pageAdapter);
+        mIndicator = findViewById(R.id.indicator);
+        mIndicator.setViewPager(mPager);
+        mIndicator.createIndicators(num_page, 0);
+        mPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+        mPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+                if (positionOffsetPixels == 0) {
+                    mPager.setCurrentItem(position);
+                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                mIndicator.animatePageSelected(position);
+                BusProvider.getInstance().post(new BusEvent(test));
+
+            }
+        });
+
+
+/*
+        for(int i = 0; i < curtain_steps.length; i++){
+            curtain_steps[i] = findViewById(mbuttonids[i]);
+            final int finalI = i;
+            curtain_steps[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        mqttClient.publish("Curtain/ctr", String.valueOf(finalI).getBytes(), 0, false);
+                    } catch (MqttException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+        */
+
+        // 메인 탭화면 설정(curtain)
+        lay1.setVisibility(LinearLayout.VISIBLE);
+
+        //action.setVisibility(LinearLayout.VISIBLE);
+
+
 
         // 하단 탭에서 탭을 선택했을 때 리스너 설정
         /*
@@ -353,6 +364,52 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        ctr_del.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("데이터 삭제").setMessage("선택된 항목의 데이터를 삭제하시겠습니까?");
+                // 삭제 버튼
+                builder.setPositiveButton("삭제", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        int count = adapter.getItemCount();
+                        ArrayList<String> result = new ArrayList<String>();
+                        for(int i = 0; i < count; i++){
+                            CheckBox cb = res_lv.getChildAt(i).findViewById(R.id.res_chk);
+                            if(cb.isChecked()){
+                                TextView tv = res_lv.getChildAt(i).findViewById(R.id.res_name);
+                                result.add("'" + tv.getText().toString() + "'");
+                            }
+                        }
+                        String del = result.toString().replace("[", "").replace("]", "");
+                        try {
+                            mqttClient.publish("Reservation/del", del.getBytes(), 0, false);
+                        } catch (MqttException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                // 취소 버튼
+                builder.setNegativeButton("취소", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                    }
+                });
+                final AlertDialog dialog = builder.create();
+                dialog.setOnShowListener( new DialogInterface.OnShowListener() {
+                    @Override public void onShow(DialogInterface arg0)
+                    {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
+                    }
+                });
+                dialog.show();    // 알림창 띄우기
+
+            }
+        });
 
 
 
@@ -393,4 +450,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
      */
+
+
 }

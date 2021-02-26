@@ -1,126 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment_Auto"
-    android:background="@color/backColor"
-    android:orientation="vertical">
+    tools:context=".Fragment_LED"
+    android:orientation="vertical"
 
+    >
+
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/testColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="색상"
+                android:textColor="@color/txtColor"
+                android:textSize="20dp"
+                />
+
+            <Switch
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:id="@+id/aswitch"
+                android:layout_width="wrap_content"
+                android:layout_height="31dp"
+                android:track="@drawable/switch_track_selector"
+                android:thumb="@drawable/switch_thumb"
+                android:checked="false"/>
+
+        </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
-            android:text="자동제어"
-            android:textSize="30dp"
-            android:textColor="@color/txtColor"
-            android:gravity="center_horizontal"
-            />
-
-        <TextView
-            android:id="@+id/testColor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="희망하는 방의 밝기"
-            android:textColor="@color/txtColor"
-            android:textSize="20dp"
-            android:layout_marginLeft="12dp"
-            />
-
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_marginHorizontal="10dp"
-            android:gravity="right"
-            app:singleSelection="true"
-            app:selectionRequired="true"
-            >
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/curtain_step0"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="매우어두움"
-                android:textSize="11dp"
-                android:textColor="@color/colorPrimary"
-                android:backgroundTint="#FFFFFF"
-                android:layout_weight="1"
-                style="?attr/materialButtonOutlinedStyle"
-                />
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/curtain_step1"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="어두움"
-                android:textSize="11dp"
-                android:textColor="@color/colorPrimary"
-                android:backgroundTint="#FFFFFF"
-                android:layout_weight="1"
-                style="?attr/materialButtonOutlinedStyle"
-                />
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/curtain_step2"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="보통"
-                android:textSize="11dp"
-                android:textColor="@color/colorPrimary"
-                android:backgroundTint="#FFFFFF"
-                android:layout_weight="1"
-                style="?attr/materialButtonOutlinedStyle"
-
-                />
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/curtain_step3"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="밝음"
-                android:textSize="11dp"
-                android:textColor="@color/colorPrimary"
-                android:backgroundTint="#FFFFFF"
-                android:layout_weight="1"
-                style="?attr/materialButtonOutlinedStyle"
-                />
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/curtain_step4"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="매우밝음"
-                android:textSize="11dp"
-                android:textColor="@color/colorPrimary"
-                android:backgroundTint="#FFFFFF"
-                android:layout_weight="1"
-                style="?attr/materialButtonOutlinedStyle"
-                />
-
-        </com.google.android.material.button.MaterialButtonToggleGroup>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_marginTop="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="색상"
-            android:textColor="@color/txtColor"
-            android:textSize="20dp"
-            android:layout_marginLeft="35dp"
-            />
+        android:id="@+id/Led_layout"
+        android:orientation="vertical"
+       >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -169,7 +92,6 @@
                 android:layout_margin="10dp"
                 />
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -218,6 +140,36 @@
                 />
         </LinearLayout>
 
-    </LinearLayout>
 
+
+
+
+
+    <TextView
+        android:id="@+id/testBright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:text="밝기"
+        android:textColor="@color/txtColor"
+        android:textSize="20dp"
+
+        />
+
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/slider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/txtColor"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:value="0.0"
+        android:valueFrom="0.0"
+        android:valueTo="100.0"
+        android:stepSize="1"
+        />
+    </LinearLayout>
 </LinearLayout>
