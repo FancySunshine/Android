@@ -22,9 +22,11 @@ public class ControlAdapter extends FragmentStateAdapter {
             return new Fragment_Curtain();
         }
         else {
-            return new Fragment_LED();
+            return new Fragment_Auto();
         }
     }
+
+
 
     @Override
     public int getItemCount() {

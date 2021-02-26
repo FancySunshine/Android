@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragment_Curtain"
     android:orientation="vertical"
+    android:background="@color/backColor"
     android:id="@+id/CurtainLed">
 
 
@@ -167,10 +168,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
             android:text="색상"
             android:textColor="@color/txtColor"
-            android:textSize="20dp"
-            />
+            android:textSize="20dp" />
 
         <Switch
             android:layout_marginLeft="10dp"
@@ -288,16 +289,12 @@
         </LinearLayout>
 
 
-
-
-
-
         <TextView
             android:id="@+id/testBright"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
             android:text="밝기"
             android:textColor="@color/txtColor"
             android:textSize="20dp"

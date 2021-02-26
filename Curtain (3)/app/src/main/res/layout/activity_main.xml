@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+
     tools:context=".MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -18,6 +19,7 @@
         android:layout_height="600dp"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:background="@color/backColor"
         >
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -61,6 +63,7 @@
                             android:layout_marginTop="2dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/txtColor"
                             android:text="자동제어"/>
 
 
@@ -81,7 +84,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/txtColor"
                         android:layout_marginTop="30dp"
                         android:textSize="30dp"
                         android:text="현재 방안의 밝기는\n어두움 입니다."
@@ -92,7 +95,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:text="현재 조도 : 30"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/txtColor"
                         android:textSize="20dp"
                         android:gravity="center"
                         android:layout_gravity="center"

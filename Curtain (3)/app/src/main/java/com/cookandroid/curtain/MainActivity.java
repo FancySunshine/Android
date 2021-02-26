@@ -18,6 +18,7 @@ import com.google.android.material.button.MaterialButton;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -139,8 +140,15 @@ public class MainActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 mIndicator.animatePageSelected(position);
+                if(position == 0){
+                    //프래그먼트 새로고침
+//                    FragmentTransaction ft = getParentFragmentManager().beginTransaction();
+//                    ft.detach(this).attach(this).commit();
+                }
+
             }
         });
+
 
 
 /*
