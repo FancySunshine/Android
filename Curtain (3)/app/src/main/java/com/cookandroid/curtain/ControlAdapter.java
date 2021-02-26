@@ -10,7 +10,7 @@ public class ControlAdapter extends FragmentStateAdapter {
     Fragment[] frags = new Fragment[]{
             new Fragment_Main(),
             new Fragment_Curtain(),
-            new Fragment_LED()
+            new Fragment_Auto()
     };
 
     public ControlAdapter(@NonNull FragmentActivity fragmentActivity, int count) {
