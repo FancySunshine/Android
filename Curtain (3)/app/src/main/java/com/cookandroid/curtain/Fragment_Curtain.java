@@ -35,13 +35,14 @@ import java.util.ArrayList;
 
 public class Fragment_Curtain extends Fragment {
 
-    State state;
 
+    LinearLayout ledlayout;
     TextView test, curtain_step;
     Switch sw; //색상 스위치
     Slider sb; //밝기 슬라이더
-    LinearLayout ledlayout;
     TextView ctr_state; //커튼 단계
+    LinearLayout auto_layout; // 자동 제어 데이터 전달 화면
+    State state;
     int step = 0;
 
     MaterialButton[] curtain_steps = new MaterialButton[5];
@@ -70,7 +71,6 @@ public class Fragment_Curtain extends Fragment {
         sb = rootView.findViewById(R.id.slider);
 
 
-        state = (State) getActivity().getApplication();
 
 
 
@@ -138,7 +138,6 @@ public class Fragment_Curtain extends Fragment {
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View view) {
-                state.setStep(0);
 
 
                 ctr_state.setText(String.valueOf(state.getStep()) + "단계");

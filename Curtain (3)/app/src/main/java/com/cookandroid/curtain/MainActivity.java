@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private CircleIndicator3 mIndicator;
     MqttCallback mqttCallback;
     Fragment_Main fm;
-    State state = new State();
+
     //MaterialButton[] curtain_steps = new MaterialButton[5];
     //int mbuttonids[] = {R.id.curtain_step0, R.id.curtain_step1, R.id.curtain_step2,
     //                   R.id.curtain_step3, R.id.curtain_step4};
@@ -125,6 +126,21 @@ public class MainActivity extends AppCompatActivity {
 
         //자동제어 스위치
         auto_sw = findViewById(R.id.auto_sw);
+        auto_sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                // fragment_main 생성
+                Fragment_Main fm = new Fragment_Main();
+                Bundle bundle = new Bundle();
+                if(auto_sw.isChecked() == true){
+                    bundle.putString("ischecked", "true");
+
+                }else{
+                    bundle.putString("ischecked", "false");
+                }
+            }
+        });
 
         fm = (Fragment_Main) getSupportFragmentManager().findFragmentById(R.id.frag_curtain);
 
@@ -261,43 +277,6 @@ public class MainActivity extends AppCompatActivity {
         // 메인 탭화면 설정(curtain)
         lay1.setVisibility(LinearLayout.VISIBLE);
 
-        //action.setVisibility(LinearLayout.VISIBLE);
-
-
-
-        // 하단 탭에서 탭을 선택했을 때 리스너 설정
-        /*
-        navView = findViewById(R.id.nav_view);
-        navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.Curtain: {
-                        lay1.setVisibility(LinearLayout.VISIBLE);
-                        lay2.setVisibility(LinearLayout.GONE);
-                        lay3.setVisibility(LinearLayout.GONE);
-                        action.setVisibility(LinearLayout.VISIBLE);
-                        break;
-                    }
-                    case R.id.LED: {
-                        lay1.setVisibility(LinearLayout.GONE);
-                        lay2.setVisibility(LinearLayout.VISIBLE);
-                        lay3.setVisibility(LinearLayout.GONE);
-                        action.setVisibility(LinearLayout.GONE);
-                        break;
-                    }
-                    case R.id.Settings: {
-                        lay1.setVisibility(LinearLayout.GONE);
-                        lay2.setVisibility(LinearLayout.GONE);
-                        lay3.setVisibility(LinearLayout.VISIBLE);
-                        action.setVisibility(LinearLayout.GONE);
-                        break;
-                    }
-                }
-                return true;
-            }
-        });
-        */
 
 
         // 예약 추가 버튼을 눌렀을 때 리스너 설정

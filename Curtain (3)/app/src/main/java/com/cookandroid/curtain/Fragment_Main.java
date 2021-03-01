@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
@@ -26,6 +27,7 @@ public class Fragment_Main extends Fragment {
     TextView ctn_state;
     String color, auto_color;
     Button color_btn, color_btn2;
+    LinearLayout auto_layout;
 
 
 
@@ -43,7 +45,7 @@ public class Fragment_Main extends Fragment {
         ctn_state = rootView.findViewById(R.id.ctn_state);
         color_btn = (rootView).findViewById(R.id.color_btn); //수동제어 색상 버튼
         color_btn2 = (rootView).findViewById(R.id.color_btn_auto);  //자동제어 색상 버튼
-
+        auto_layout = (rootView).findViewById(R.id.auto_layout);
 
 
         // 수동 제어 색상

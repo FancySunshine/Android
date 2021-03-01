@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -23,6 +24,8 @@ public class Fragment_Auto extends Fragment {
             R.id.color_btn5, R.id.color_btn6, R.id.color_btn7, R.id.color_btn8, R.id.color_btn9, R.id.color_btn10};
     ArrayList<String> colors = new ArrayList<>();  // Color 넣어줄 list
 
+    Button btn_step1, btn_step2, btn_step3, btn_step4, btn_step0;
+
 
     public Fragment_Auto() {
         // Required empty public constructor
@@ -39,6 +42,16 @@ public class Fragment_Auto extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_auto, container, false);
+        btn_step0 = rootView.findViewById(R.id.curtain_step);
+        btn_step1 = rootView.findViewById(R.id.curtain_step1);
+        btn_step2 = rootView.findViewById(R.id.curtain_step2);
+        btn_step3 = rootView.findViewById(R.id.curtain_step3);
+        btn_step4 = rootView.findViewById(R.id.curtain_step4);
+
+        for(int i =0; i<5; i++){
+
+
+        }
         color_layout = rootView.findViewById(R.id.colorpicker_base);
 
 
@@ -65,6 +78,8 @@ public class Fragment_Auto extends Fragment {
                 }
             });
         }
+
+
 
 
 
