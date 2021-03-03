@@ -101,6 +101,7 @@
                     android:text="일월화수목금토"
                     android:textColor="@color/txtColor" />
                 <Switch
+                    android:id="@+id/res_sch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

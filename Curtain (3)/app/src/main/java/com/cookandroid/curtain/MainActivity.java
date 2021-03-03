@@ -20,6 +20,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
 
 import androidx.annotation.Nullable;
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     //int mbuttonids[] = {R.id.curtain_step0, R.id.curtain_step1, R.id.curtain_step2,
     //                   R.id.curtain_step3, R.id.curtain_step4};
     
-    String test = "";
+    State state;
 
     /// Reservation Activity에서 종료 후 실행되는 부분(Main Activity의 예약리스트 갱신)
     @Override
@@ -94,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         // 다른 액티비티에서 MainActivity 함수를 사용하기 위한 문맥(Context) 저장
         mContext = this;
@@ -124,6 +126,8 @@ public class MainActivity extends AppCompatActivity {
         res_lv.setLayoutManager(new LinearLayoutManager(this));
         //res_lv.setNestedScrollingEnabled(true);
 
+        state = (State) getApplication();
+
         //자동제어 스위치
         auto_sw = findViewById(R.id.auto_sw);
         auto_sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -147,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
 // 서버와 통신하기 위한 MQTT 클라이언트 생성
         Random rnd = new Random();
         int k = rnd.nextInt();
-        mqttClient = new MqttAndroidClient(this, "tcp://172.16.109.63:1883", "Android" + k);
+        mqttClient = new MqttAndroidClient(this, "tcp://172.30.1.16:1883", "Android" + k);
 
 
         try {
@@ -166,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
                         mqttClient.subscribe("Reservation/add/fail", 0);
                         mqttClient.subscribe("Reservation/del/success", 0);
                         mqttClient.subscribe("Reservation/del/fail", 0);
-                        mqttClient.subscribe("test", 0);
+                        mqttClient.subscribe("RPI/info", 0); // 라즈베리파이 정보 얻어오기
                         mqttClient.publish("client/connect", id.getBytes(),0, false);
 
 
@@ -199,7 +203,6 @@ public class MainActivity extends AppCompatActivity {
                     //adapter.setCount(msg.length());
                     //adapter.setData(msg);
                     res_lv.setAdapter(adapter);
-
                 }
                 /*
                 else if (topic.equals("Reservation/add/success")) {
@@ -210,15 +213,15 @@ public class MainActivity extends AppCompatActivity {
 
                 } */
                 else if (topic.equals("test")) {
-                    test = message.toString();
-                    BusProvider.getInstance().post(new BusEvent(test));
+                    state.setStep(Integer.parseInt(message.toString()));
+                    BusProvider.getInstance().post(new BusEvent(state.getStep(), state.getLed(), state.getBright()));
                 }
                 else if (topic.equals("Reservation/del/success")) {
                     Toast.makeText(getApplicationContext(), "선택한 예약이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
                     mqttClient.publish("client/connect", id.getBytes(),0, false);
                 }
                 else if(topic.equals("Reservation/del/fail")){
-                    Toast.makeText(getApplicationContext(), "예약 삭제에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "삭제할 예약들을 선택해주세요.", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -251,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 mIndicator.animatePageSelected(position);
-                BusProvider.getInstance().post(new BusEvent(test));
+                BusProvider.getInstance().post(new BusEvent(state.getStep(), state.getLed(), state.getBright()));
 
             }
         });
@@ -430,5 +433,12 @@ public class MainActivity extends AppCompatActivity {
 
      */
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        BusProvider.getInstance().unregister(this);
+
+    }
 
 }

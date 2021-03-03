@@ -49,6 +49,7 @@ public class Reservation extends AppCompatActivity {
     String message = "";
     // 요일 버튼 Id
     int[] mbutton_ids = {R.id.sun, R.id.mon, R.id.tue, R.id.wed, R.id.thu, R.id.fri, R.id.sat};
+    MaterialButton[] mbutton = new MaterialButton[7];
     LinearLayout led_layout, curtain_layout;
 
     AppCompatButton[] color_btn = new AppCompatButton[10];
@@ -84,6 +85,11 @@ public class Reservation extends AppCompatActivity {
         res_cancel = findViewById(R.id.res_cancel);          // 예약 취소
 
         sw_curtain = findViewById(R.id.sw_curtain);         // curtain 스위치
+
+        for(int i = 0; i < mbutton_ids.length; i++){
+            mbutton[i] = findViewById(mbutton_ids[i]);
+        }
+
         sw_curtain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -146,27 +152,16 @@ public class Reservation extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "이름을 입력해주세요", Toast.LENGTH_SHORT).show();
                 }
                 else {                   // 선택된 요일값 받아오기
-                    char[] ctr;
-                    String result;
 
-                    ctr = "0000000".toCharArray();
-
-                    List<Integer> checkedButtonIds = res_mbt.getCheckedButtonIds();
-
-                    if (checkedButtonIds.size() > 0) {
-                        for (Integer buttonId : checkedButtonIds) {
-                            ctr[(buttonId - 1) % 7] = '1';
+                    String result = "";
+                    for(int i = 0; i < mbutton.length; i++){
+                        if(mbutton[i].isChecked()){
+                            result += "1";
+                        }
+                        else{
+                            result += "0";
                         }
                     }
-
-                    result = Arrays.toString(ctr).replace("[", "").replace("]", "")
-                            .replace(" ", "").replace(",", "").trim();
-                    /*
-                    Toast.makeText(Reservation.this, Arrays.toString(ctr).replace("[", "").replace("]", "")
-                            .replace(" ", "").replace(",", "").trim(), Toast.LENGTH_SHORT).show();
-
-                     */
-
 
                     message = res_name.getText() + "|" + res_tp.getCurrentHour() + ":" + res_tp.getCurrentMinute() + "|"
                             + result + "|" + String.valueOf((int) sld_step.getValue())

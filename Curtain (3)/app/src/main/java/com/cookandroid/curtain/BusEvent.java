@@ -2,17 +2,20 @@ package com.cookandroid.curtain;
 
 public class BusEvent {
 
-    String flag;
+    int curtain, bright;
+    String led;
 
-    public BusEvent(String flag ) {
+    public BusEvent(int curtain, String led, int bright) {
 
-        this.flag = flag;
+        this.curtain = curtain;
+        this.led = led;
+        this.bright = bright;
 
     }
 
-    public String isFlag() {
+    public int isFlag() {
 
-        return flag;
+        return curtain;
 
     }
 }

@@ -2,9 +2,17 @@ package com.cookandroid.curtain;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,13 +44,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         TextView res_step;  // 예약 상태
         TextView res_time;  // 예약 시간
         TextView res_day;    // 예약 요일
-        TextView res_chk;
+        Switch res_sch;
+        CheckBox res_chk;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             res_name = itemView.findViewById(R.id.res_name);  // 예약 이름
             res_step = itemView.findViewById(R.id.res_step);  // 예약 상태
             res_time = itemView.findViewById(R.id.res_time);  // 예약 시간
             res_day = itemView.findViewById(R.id.res_day);    // 예약 요일
+            res_sch = itemView.findViewById(R.id.res_sch);
             res_chk = itemView.findViewById(R.id.res_chk);
         }
     }
@@ -61,11 +71,46 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public void onBindViewHolder(@NonNull final RecyclerAdapter.ViewHolder holder, int position) {
         try {
             c = holder.itemView.getContext();
+
             JSONObject data = arr.getJSONObject(position);
             holder.res_name.setText(data.getString("Name"));
             holder.res_step.setText(data.getString("ctr") + "단계");
             holder.res_time.setText(data.getString("StartTime"));
-            
+
+            holder.res_sch.setChecked(data.getString("chk_state").equals("1"));
+
+            SpannableStringBuilder span_s = new SpannableStringBuilder("일월화수목금토");
+            String res_day = data.getString("dayofweek");
+            for(int i = 0; i < span_s.length(); i++){
+                if(res_day.charAt(i) == '1'){
+                    span_s.setSpan(new ForegroundColorSpan(Color.RED), i, i + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+            }
+
+            holder.res_sch.setOnCheckedChangeListener(new OCHL_with_pos(data) {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    try {
+                        if(b) {
+                            ((MainActivity) MainActivity.mContext).mqttClient.publish("Reservation/check",
+                                    (index.getString("Name") + "|1").getBytes(), 0, false);
+                        }
+                        else{
+                            ((MainActivity) MainActivity.mContext).mqttClient.publish("Reservation/check",
+                                    (index.getString("Name") + "|0").getBytes(), 0, false);
+                        }
+                    } catch (MqttException|JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            });
+
+
+
+
+            holder.res_day.setText(span_s);
+
             // 예약리스트들의 데이터를 이용하여 Reservation Activity 실행(예약리스트 수정)
             // 커스텀 OnClick Listener를 만들어 JSONObject(data) 값을 OnClick Listener에 전달
             holder.itemView.setOnClickListener(new OCL_with_pos(data) {
@@ -190,6 +235,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         public OCL_with_pos(JSONObject index) {
             this.index = index;
         }
+    }
+    public abstract class OCHL_with_pos implements CompoundButton.OnCheckedChangeListener{
+        protected JSONObject index;
+        public OCHL_with_pos(JSONObject index){this.index = index;}
     }
 
 }

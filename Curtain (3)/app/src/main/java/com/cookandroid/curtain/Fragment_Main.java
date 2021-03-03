@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.otto.Subscribe;
 
@@ -24,11 +25,12 @@ import org.w3c.dom.Text;
 
 public class Fragment_Main extends Fragment {
 
-    TextView ctn_state;
+    TextView ctn_state, led_bright;
     String color, auto_color;
     Button color_btn, color_btn2;
     LinearLayout auto_layout;
 
+    State state;
 
 
     @Override
@@ -43,15 +45,17 @@ public class Fragment_Main extends Fragment {
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_main, container, false);
         ctn_state = rootView.findViewById(R.id.ctn_state);
-        color_btn = (rootView).findViewById(R.id.color_btn); //수동제어 색상 버튼
-        color_btn2 = (rootView).findViewById(R.id.color_btn_auto);  //자동제어 색상 버튼
-        auto_layout = (rootView).findViewById(R.id.auto_layout);
+        color_btn = rootView.findViewById(R.id.color_btn); //수동제어 색상 버튼
+        color_btn2 = rootView.findViewById(R.id.color_btn_auto);  //자동제어 색상 버튼
+        auto_layout = rootView.findViewById(R.id.auto_layout);
+        led_bright = rootView.findViewById(R.id.led_bright);
 
+        state = (State) getActivity().getApplication();
 
         // 수동 제어 색상
-        color = "#ffab91";
+        state.setLed("#ffab91");
         GradientDrawable d = (GradientDrawable) color_btn.getBackground();
-        d.setColor(Color.parseColor(color));
+        d.setColor(Color.parseColor(state.getLed()));
 
         // 자동 제어 색상
         auto_color = "#ffab91";
@@ -68,9 +72,12 @@ public class Fragment_Main extends Fragment {
     }
     @Subscribe
     public void busStop(BusEvent busEvent) {
-        if(busEvent.flag != null) {
-            ctn_state.setText(busEvent.flag + "단계");
-        }
+        ctn_state.setText(busEvent.curtain + "단계");
+        // 수동 제어 색상
+        GradientDrawable d = (GradientDrawable) color_btn.getBackground();
+        d.setColor(Color.parseColor(busEvent.led));
+        led_bright.setText("밝기 : " + busEvent.bright + "%");
+
     }
     @Override
     public void onDestroy() {

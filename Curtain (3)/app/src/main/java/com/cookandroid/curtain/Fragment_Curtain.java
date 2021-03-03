@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -39,7 +40,7 @@ public class Fragment_Curtain extends Fragment {
     LinearLayout ledlayout;
     TextView test, curtain_step;
     Switch sw; //색상 스위치
-    Slider sb; //밝기 슬라이더
+    Slider b_slider; //밝기 슬라이더
     TextView ctr_state; //커튼 단계
     LinearLayout auto_layout; // 자동 제어 데이터 전달 화면
     State state;
@@ -68,10 +69,27 @@ public class Fragment_Curtain extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_curtain, container, false);
         ledlayout = rootView.findViewById(R.id.Led_layout);
         sw = rootView.findViewById(R.id.aswitch);
-        sb = rootView.findViewById(R.id.slider);
+        b_slider = rootView.findViewById(R.id.slider);
 
 
+        b_slider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
+            @Override
+            public void onStartTrackingTouch(@NonNull Slider slider) {
 
+            }
+
+            @Override
+            public void onStopTrackingTouch(@NonNull Slider slider) {
+                int i = (int) slider.getValue();
+                state.setBright(i);
+                BusProvider.getInstance().post(new BusEvent(state.getStep(), state.getLed(), state.getBright()));
+                try {
+                    ((MainActivity) MainActivity.mContext).mqttClient.publish("Led/bright", String.valueOf(i).getBytes(), 0, false);
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
 
         //스위치 리스너
@@ -83,7 +101,7 @@ public class Fragment_Curtain extends Fragment {
                         color_btn[i].setEnabled(true);
                     }
                     ledlayout.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    sb.setEnabled(true);
+                    b_slider.setEnabled(true);
 
 
                 }
@@ -92,7 +110,7 @@ public class Fragment_Curtain extends Fragment {
                         color_btn[i].setEnabled(false);
                     }
                     ledlayout.setBackgroundColor(Color.parseColor("#808080"));
-                    sb.setEnabled(false);
+                    b_slider.setEnabled(false);
 
                 }
             }
@@ -109,19 +127,39 @@ public class Fragment_Curtain extends Fragment {
         colors.add("#80cbc4");
         colors.add("#c5e1a5");
 
+        // state definition
+        state = (State) getActivity().getApplication();
+
+        /// led Buttons Set Color
         for(int i = 0; i < color_btn.length; i++){
             color_btn[i] = rootView.findViewById(color_btn_ids[i]);
             GradientDrawable d = (GradientDrawable) color_btn[i].getBackground();
             d.setColor(Color.parseColor(colors.get(i)));
-            final int finalI = i;
-            color_btn[i].setOnClickListener(new View.OnClickListener() {
+        }
+        /// led Buttons Click Event
+        for (AppCompatButton appCompatButton : color_btn) {
+            appCompatButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getContext(), colors.get(finalI), Toast.LENGTH_SHORT).show();
+                    for (int i = 0; i < color_btn.length; i++) {
+                            if(view.getId() == color_btn[i].getId()){
+                                GradientDrawable d = (GradientDrawable) color_btn[i].getBackground();
+                                // 테두리 지정
+                                d.setStroke(5, Color.parseColor("#FFFFFF"));
+                                state.setLed(colors.get(i));
+
+                                Toast.makeText(getContext(), colors.get(i), Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                GradientDrawable d = (GradientDrawable) color_btn[i].getBackground();
+                                // 테두리 안보이게
+                                d.setStroke(0, Color.parseColor("#FFFFFF"));
+                            }
+                    }
+
                 }
             });
         }
-
 
 
 
@@ -138,9 +176,10 @@ public class Fragment_Curtain extends Fragment {
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View view) {
+                state.setStep(0);
 
-
-                ctr_state.setText(String.valueOf(state.getStep()) + "단계");
+                curtain_step.setText(String.valueOf(state.getStep()) + "단계");
+                BusProvider.getInstance().post(new BusEvent(state.getStep(), state.getLed(), state.getBright()));
 
 
                 try {
@@ -158,6 +197,7 @@ public class Fragment_Curtain extends Fragment {
                     state.setStep(state.getStep() - 1);
 
                     curtain_step.setText(String.valueOf(state.getStep()) + "단계");
+                    BusProvider.getInstance().post(new BusEvent(state.getStep(), state.getLed(), state.getBright()));
 
 
                     try {
@@ -174,6 +214,7 @@ public class Fragment_Curtain extends Fragment {
                 if (state.getStep() + 1 < 5) {
                     state.setStep( state.getStep() + 1);
                     curtain_step.setText(String.valueOf(state.getStep()) + "단계");
+                    BusProvider.getInstance().post(new BusEvent(state.getStep(), state.getLed(), state.getBright()));
 
 
 
@@ -191,7 +232,7 @@ public class Fragment_Curtain extends Fragment {
                 state.setStep(4);
 
                 curtain_step.setText(String.valueOf(state.getStep()) + "단계");
-                String name = (String) curtain_step.getText();
+                BusProvider.getInstance().post(new BusEvent(state.getStep(), state.getLed(), state.getBright()));
 
 
                 try {
@@ -215,9 +256,8 @@ public class Fragment_Curtain extends Fragment {
 
     @Subscribe
     public void busStop(BusEvent busEvent) {
-        if(busEvent.flag != null) {
-            curtain_step.setText(busEvent.flag + "단계");
-        }
+        curtain_step.setText(busEvent.curtain + "단계");
+
     }
     @Override
     public void onDestroy() {
