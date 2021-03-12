@@ -104,6 +104,9 @@ public class MainActivity extends AppCompatActivity {
         collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
         lay1 = findViewById(R.id.lay1);
 
+        Intent intent = new Intent(this, LoadingActivity.class);
+        startActivity(intent);
+
 
         //action = findViewById(R.id.action);
 
@@ -145,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+
 
         fm = (Fragment_Main) getSupportFragmentManager().findFragmentById(R.id.frag_curtain);
 

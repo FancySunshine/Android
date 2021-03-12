@@ -8,9 +8,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_main"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_main_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:name=".State"
@@ -18,8 +18,12 @@
 
         <activity android:name=".Reservation"
             android:theme="@style/AppTheme.actionbar"
+            />
 
-        />
+        <activity android:name=".LoadingActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
