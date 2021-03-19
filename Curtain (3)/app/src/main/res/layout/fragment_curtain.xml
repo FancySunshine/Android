@@ -184,7 +184,7 @@
             android:layout_width="wrap_content"
             android:layout_height="31dp"
             android:track="@drawable/switch_track_selector"
-            android:thumb="@drawable/switch_thumb"
+            android:thumb="@drawable/switch_thumb_off"
             tools:ignore="InvalidId"
             android:checked="false"/>
 

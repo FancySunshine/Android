@@ -26,6 +26,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -42,20 +43,29 @@ import java.util.List;
 public class Reservation extends AppCompatActivity {
     Slider sld_step;
     TimePicker res_tp;
+    TextView hope_bright, hope_color;
     EditText res_name, res_memo;
     MaterialButtonToggleGroup res_mbt;
     Button res_save, res_cancel;
     Switch sw_curtain, sw_led;
     String message = "";
     // 요일 버튼 Id
+
     int[] mbutton_ids = {R.id.sun, R.id.mon, R.id.tue, R.id.wed, R.id.thu, R.id.fri, R.id.sat};
     MaterialButton[] mbutton = new MaterialButton[7];
-    LinearLayout led_layout, curtain_layout;
+    //LinearLayout led_layout, curtain_layout;
 
+
+    //LED(색상) 배열
     AppCompatButton[] color_btn = new AppCompatButton[10];
     int[] color_btn_ids = new int[]{R.id.color_btn1, R.id.color_btn2, R.id.color_btn3, R.id.color_btn4,
             R.id.color_btn5, R.id.color_btn6, R.id.color_btn7, R.id.color_btn8, R.id.color_btn9, R.id.color_btn10};
     ArrayList<String> colors = new ArrayList<>();  // Color 넣어줄 list
+
+    //LED(희망하는 방의 밝기 버튼) 배열
+    com.google.android.material.button.MaterialButton[] btn_step = new com.google.android.material.button.MaterialButton[5];
+    int [] btn_step_ids = new int[] {R.id.curtain_step0, R.id.curtain_step1, R.id.curtain_step2, R.id.curtain_step3, R.id.curtain_step4};
+
 
 
     public static Activity activity;
@@ -71,7 +81,6 @@ public class Reservation extends AppCompatActivity {
 
         activity = Reservation.this;
 
-
         res_tp = findViewById(R.id.res_tp);                // 예약 시간
 
         res_name = findViewById(R.id.res_name);        // 예약 이름
@@ -85,6 +94,18 @@ public class Reservation extends AppCompatActivity {
         res_cancel = findViewById(R.id.res_cancel);          // 예약 취소
 
         sw_curtain = findViewById(R.id.sw_curtain);         // curtain 스위치
+
+        colors.add("#ffab91");
+        colors.add("#F48FB1");
+        colors.add("#ce93d8");
+        colors.add("#b39ddb");
+        colors.add("#9fa8da");
+        colors.add("#90caf9");
+        colors.add("#81d4fa");
+        colors.add("#80deea");
+        colors.add("#80cbc4");
+        colors.add("#c5e1a5");
+
 
         for(int i = 0; i < mbutton_ids.length; i++){
             mbutton[i] = findViewById(mbutton_ids[i]);
@@ -104,7 +125,72 @@ public class Reservation extends AppCompatActivity {
 
         });
 
+
+
         sw_led = findViewById(R.id.sw_led);         // led 스위치
+
+        hope_bright = findViewById(R.id.hope_bright);
+        hope_color = findViewById(R.id.hope_color);
+
+        for(int i = 0; i < color_btn.length; i++){
+            color_btn[i] = findViewById(color_btn_ids[i]);
+            GradientDrawable d = (GradientDrawable) color_btn[i].getBackground();
+            d.setColor(Color.parseColor(colors.get(i)));
+            final int finalI = i;
+            color_btn[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //Toast.makeText(getContext(), colors.get(finalI), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        for(int i =0; i<btn_step.length; i++) {
+            btn_step[i] = findViewById(btn_step_ids[i]);
+            final String btn_text = (String)btn_step[i].getText();
+            btn_step[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //Toast.makeText(getContext(), btn_text,Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }
+
+
+        sw_led.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (sw_led.isChecked() == true)
+                {
+                    for(int i = 0; i< btn_step.length; i++) {
+                        btn_step[i].setEnabled(true);
+                    }
+
+                    for(int i = 0; i < color_btn.length; i++) {
+                        color_btn[i].setEnabled(true);
+                    }
+
+                    hope_bright.setTextColor(Color.parseColor("#4D4D4D"));
+                    hope_color.setTextColor(Color.parseColor("#4D4D4D"));
+
+                }
+                else
+                {
+                    for(int i = 0; i< btn_step.length; i++) {
+                        btn_step[i].setEnabled(false);
+                    }
+
+                    for(int i = 0; i < color_btn.length; i++){
+                        color_btn[i].setEnabled(false);
+                    }
+
+                    hope_bright.setTextColor(Color.parseColor("#F4CFC9C9"));
+                    hope_color.setTextColor(Color.parseColor("#F4CFC9C9"));
+                }
+            }
+
+        });
 
 
         sld_step.setLabelFormatter(new LabelFormatter() {        // 커튼 단계별 텍스트 표시
@@ -199,7 +285,6 @@ public class Reservation extends AppCompatActivity {
         colors.add("#b39ddb");
         colors.add("#ce93d8");
 */
-
         colors.add("#ffab91");
         colors.add("#F48FB1");
         colors.add("#ce93d8");

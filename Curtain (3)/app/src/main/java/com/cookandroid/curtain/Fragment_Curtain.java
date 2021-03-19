@@ -148,6 +148,25 @@ public class Fragment_Curtain extends Fragment {
                                 d.setStroke(5, Color.parseColor("#FFFFFF"));
                                 state.setLed(colors.get(i));
 
+                                ArrayList<Integer> rgb = new ArrayList<Integer>();
+                                String result = "";
+                                for(int j = 1; j <= 3; j++){
+                                    rgb.add(Integer.parseInt(colors.get(i).substring(2 * j - 1, 2 * j + 1), 16));
+                                }
+                                for(int k = 0; k < rgb.size(); k++){
+                                    result += String.valueOf(rgb.get(k));
+                                    if(k < rgb.size() - 1){
+                                        result += "|";
+                                    }
+
+                                }
+                                try {
+                                    ((MainActivity) MainActivity.mContext).mqttClient.publish("LED/color", result.getBytes(), 0, false);
+                                } catch (MqttException e) {
+                                    e.printStackTrace();
+                                }
+                                Toast.makeText(getContext(), result, Toast.LENGTH_SHORT).show();
+
                                 Toast.makeText(getContext(), colors.get(i), Toast.LENGTH_SHORT).show();
                             }
                             else{

@@ -172,8 +172,6 @@
             </LinearLayout>
 
 
-            -
-
             <LinearLayout
                 android:id="@+id/curtain_layout"
                 android:layout_width="match_parent"
@@ -211,13 +209,10 @@
             android:layout_marginBottom="30dp"
             android:orientation="vertical">
 
-
-            -
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp">
+                android:layout_marginBottom="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -244,7 +239,7 @@
 
                 <include
                     android:id="@+id/led_layout"
-                    layout="@layout/fragment_auto"
+                    layout="@layout/led_bright_color"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -253,7 +248,6 @@
         </LinearLayout>
         //LED layout 끝
 
-        -
 
         <LinearLayout
             android:layout_width="match_parent"

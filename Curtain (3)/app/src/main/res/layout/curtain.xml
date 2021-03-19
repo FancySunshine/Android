@@ -4,32 +4,32 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:background="@color/colorPrimary"
-        >
+        android:orientation="horizontal">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
             android:background="@drawable/corner"
-            >
+            android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingVertical="20dp"
                 android:paddingStart="20dp"
                 android:text="예약"
-                android:paddingVertical="20dp"
                 android:textColor="@color/colorPrimary"
-                android:textSize="20dp"
-                />
+                android:textSize="20dp" />
+
             <View
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                />
+                android:layout_weight="1" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/ctr_add"
@@ -41,43 +41,47 @@
                 android:textSize="15dp"
 
                 />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/ctr_sel"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:textColor="@color/colorPrimary"
                 android:text="선택"
+                android:textColor="@color/colorPrimary"
                 android:textSize="15dp"
 
                 />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/ctr_all"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:textColor="@color/colorPrimary"
                 android:text="모두 선택"
+                android:textColor="@color/colorPrimary"
                 android:textSize="15dp"
 
                 />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/ctr_del"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:textColor="@color/colorPrimary"
                 android:text="삭제"
+                android:textColor="@color/colorPrimary"
                 android:textSize="15dp"
 
                 />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/ctr_cancel"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:textColor="@color/colorPrimary"
                 android:text="취소"
+                android:textColor="@color/colorPrimary"
                 android:textSize="15dp"
 
                 />

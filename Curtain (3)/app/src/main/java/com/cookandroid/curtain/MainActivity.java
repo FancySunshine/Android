@@ -42,6 +42,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout lay1, top_lay;
     MaterialButton ctr_add, ctr_sel, ctr_del, ctr_all, ctr_cancel;
     public static Context mContext;
-    Switch auto_sw;
     RecyclerView res_lv;
     RecyclerAdapter adapter;
     String id = "A12345";
@@ -131,27 +131,21 @@ public class MainActivity extends AppCompatActivity {
 
         state = (State) getApplication();
 
-        //자동제어 스위치
-        auto_sw = findViewById(R.id.auto_sw);
-        auto_sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                // fragment_main 생성
-                Fragment_Main fm = new Fragment_Main();
-                Bundle bundle = new Bundle();
-                if(auto_sw.isChecked() == true){
-                    bundle.putString("ischecked", "true");
-
-                }else{
-                    bundle.putString("ischecked", "false");
-                }
-            }
-        });
-
 
 
         fm = (Fragment_Main) getSupportFragmentManager().findFragmentById(R.id.frag_curtain);
+
+
+        JSONArray msg = null;
+        try {
+            msg = new JSONArray("[{\"Name\":\"tctc6g6\",\"StartTime\":\"18:2\",\"ctr\":1,\"dayofweek\":\"1111111\",\"Memo\":\"\",\"curtain_num\":null,\"chk_state\":0},{\"Name\":\"w818w\",\"StartTime\":\"17:53\",\"ctr\":0,\"dayofweek\":\"0000111\",\"Memo\":\"\",\"curtain_num\":null,\"chk_state\":0},{\"Name\":\"공부\",\"StartTime\":\"9:1\",\"ctr\":2,\"dayofweek\":\"1011111\",\"Memo\":\"4\",\"curtain_num\":null,\"chk_state\":0},{\"Name\":\"댜댜더더\",\"StartTime\":\"19:0\",\"ctr\":2,\"dayofweek\":\"1100101\",\"Memo\":\"너머재재재\",\"curtain_num\":null,\"chk_state\":0},{\"Name\":\"도현도\",\"StartTime\":\"20:16\",\"ctr\":2,\"dayofweek\":\"1000100\",\"Memo\":\"\",\"curtain_num\":null,\"chk_state\":0}]");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        adapter = new RecyclerAdapter(getApplicationContext(), msg);
+        //adapter.setCount(msg.length());
+        //adapter.setData(msg);
+        res_lv.setAdapter(adapter);
 
 // 서버와 통신하기 위한 MQTT 클라이언트 생성
         Random rnd = new Random();
