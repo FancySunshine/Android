@@ -25,7 +25,7 @@
                 android:layout_marginTop="20dp"
                 android:fontFamily="@font/gmarketsansmedium"
                 android:text="희망하는 방의 밝기"
-                android:textColor="@color/txtColor"
+                android:textColor="@color/offColor"
                 android:textSize="20dp"
                 android:layout_marginLeft="12dp"
                 />
@@ -51,7 +51,8 @@
                     android:minHeight="0dp"
                     android:text="매우어두움"
                     android:textColor="@color/txtColor"
-                    android:textSize="8dp" />
+                    android:textSize="8dp"
+                    />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/curtain_step1"
@@ -64,6 +65,7 @@
                     android:backgroundTint="#FFFFFF"
                     android:layout_weight="1"
                     style="?attr/materialButtonOutlinedStyle"
+
                     />
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/curtain_step2"
@@ -120,7 +122,7 @@
                 android:layout_marginTop="20dp"
                 android:text="색상"
                 android:fontFamily="@font/gmarketsansmedium"
-                android:textColor="@color/txtColor"
+                android:textColor="@color/offColor"
                 android:textSize="20dp"
                 android:layout_marginLeft="35dp"
                 />

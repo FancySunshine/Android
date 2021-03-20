@@ -8,9 +8,11 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 public class ControlAdapter extends FragmentStateAdapter {
     public int mCount;
     Fragment[] frags = new Fragment[]{
+            new Fragment_Machine(),
             new Fragment_Main(),
             new Fragment_Curtain(),
             new Fragment_Auto()
+
     };
 
     public ControlAdapter(@NonNull FragmentActivity fragmentActivity, int count) {
@@ -26,6 +28,6 @@ public class ControlAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 3;
+        return 4;
     }
 }

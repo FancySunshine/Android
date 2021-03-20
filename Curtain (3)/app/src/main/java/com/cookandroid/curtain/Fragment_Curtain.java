@@ -37,10 +37,8 @@ import java.util.ArrayList;
 public class Fragment_Curtain extends Fragment {
 
 
-    LinearLayout ledlayout;
-    TextView test, curtain_step;
-    Switch sw; //색상 스위치
-    Slider b_slider; //밝기 슬라이더
+    TextView curtain_step;
+     Slider b_slider; //밝기 슬라이더
     TextView ctr_state; //커튼 단계
     LinearLayout auto_layout; // 자동 제어 데이터 전달 화면
     State state;
@@ -67,10 +65,7 @@ public class Fragment_Curtain extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_curtain, container, false);
-        ledlayout = rootView.findViewById(R.id.Led_layout);
-        sw = rootView.findViewById(R.id.aswitch);
         b_slider = rootView.findViewById(R.id.slider);
-
 
         b_slider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
             @Override
@@ -87,31 +82,6 @@ public class Fragment_Curtain extends Fragment {
                     ((MainActivity) MainActivity.mContext).mqttClient.publish("Led/bright", String.valueOf(i).getBytes(), 0, false);
                 } catch (MqttException e) {
                     e.printStackTrace();
-                }
-            }
-        });
-
-
-        //스위치 리스너
-        sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (sw.isChecked() == true){
-                    for(int i = 0; i < color_btn.length; i++){
-                        color_btn[i].setEnabled(true);
-                    }
-                    ledlayout.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    b_slider.setEnabled(true);
-
-
-                }
-                else{
-                    for(int i = 0; i < color_btn.length; i++){
-                        color_btn[i].setEnabled(false);
-                    }
-                    ledlayout.setBackgroundColor(Color.parseColor("#808080"));
-                    b_slider.setEnabled(false);
-
                 }
             }
         });
@@ -262,12 +232,6 @@ public class Fragment_Curtain extends Fragment {
             }
         });
 
-
-
-
-
-
-        test = rootView.findViewById(R.id.test);
 
 
         return rootView;

@@ -115,6 +115,7 @@ public class Fragment_Auto extends Fragment {
                 {
                     for(int i = 0; i< btn_step.length; i++) {
                         btn_step[i].setEnabled(true);
+
                     }
 
                     for(int i = 0; i < color_btn.length; i++) {
@@ -129,10 +130,12 @@ public class Fragment_Auto extends Fragment {
                     {
                         for(int i = 0; i< btn_step.length; i++) {
                             btn_step[i].setEnabled(false);
+                            btn_step[i].setPressed(false);
                         }
 
                         for(int i = 0; i < color_btn.length; i++){
                         color_btn[i].setEnabled(false);
+                        color_btn[i].setPressed(false);
                         }
 
                         hope_bright.setTextColor(Color.parseColor("#F4CFC9C9"));
