@@ -20,11 +20,14 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
 
+import org.eclipse.paho.client.mqttv3.MqttException;
+
 import java.util.ArrayList;
 
 public class Fragment_Auto extends Fragment {
     private LinearLayout color_layout;
     private SeekBar seekbar;
+    State state;
 
     AppCompatButton[] color_btn = new AppCompatButton[10];
     int[] color_btn_ids = new int[]{R.id.color_btn1, R.id.color_btn2, R.id.color_btn3, R.id.color_btn4,
@@ -33,7 +36,7 @@ public class Fragment_Auto extends Fragment {
 
 
     com.google.android.material.button.MaterialButton[] btn_step = new com.google.android.material.button.MaterialButton[5];
-    int [] btn_step_ids = new int[] {R.id.curtain_step0, R.id.curtain_step1, R.id.curtain_step2, R.id.curtain_step3, R.id.curtain_step4};
+    int[] btn_step_ids = new int[]{R.id.curtain_step0, R.id.curtain_step1, R.id.curtain_step2, R.id.curtain_step3, R.id.curtain_step4};
 
 
     int offColor;
@@ -49,8 +52,7 @@ public class Fragment_Auto extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
+        BusProvider.getInstance().register(this);
 
     }
 
@@ -80,27 +82,79 @@ public class Fragment_Auto extends Fragment {
         colors.add("#80cbc4");
         colors.add("#c5e1a5");
 
+        state = (State) getActivity().getApplication();
 
-        for(int i = 0; i < color_btn.length; i++){
+
+        for (int i = 0; i < color_btn.length; i++) {
             color_btn[i] = rootView.findViewById(color_btn_ids[i]);
-            GradientDrawable d = (GradientDrawable) color_btn[i].getBackground();
-            d.setColor(Color.parseColor(colors.get(i)));
-            final int finalI = i;
-            color_btn[i].setOnClickListener(new View.OnClickListener() {
+            GradientDrawable d_auto = (GradientDrawable) color_btn[i].getBackground();
+            d_auto.setColor(Color.parseColor(colors.get(i)));
+        }
+
+        /// led Buttons Click Event
+        for (AppCompatButton appCompatButton : color_btn) {
+            appCompatButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getContext(), colors.get(finalI), Toast.LENGTH_SHORT).show();
+                    for (int i = 0; i < color_btn.length; i++) {
+                        if (view.getId() == color_btn[i].getId()) {
+                            GradientDrawable d_auto = (GradientDrawable) color_btn[i].getBackground();
+                            // 테두리 지정
+                            d_auto.setStroke(5, Color.parseColor("#FFFFFF"));
+                            state.setAuto_Led(colors.get(i));
+
+                            BusProvider.getInstance().post(new BusEvent
+                                    (state.getStep(), state.getLed(), state.getBright(), state.getAuto_Step(), state.getAuto_Led()));
+
+
+                            ArrayList<Integer> rgb = new ArrayList<Integer>();
+                            String result = "";
+                            for (int j = 1; j <= 3; j++) {
+                                rgb.add(Integer.parseInt(colors.get(i).substring(2 * j - 1, 2 * j + 1), 16));
+                            }
+                            for (int k = 0; k < rgb.size(); k++) {
+                                result += String.valueOf(rgb.get(k));
+                                if (k < rgb.size() - 1) {
+                                    result += "|";
+                                }
+
+                            }
+                            try {
+                                ((MainActivity) MainActivity.mContext).mqttClient.publish("LED/color", result.getBytes(), 0, false);
+                            } catch (MqttException e) {
+                                e.printStackTrace();
+                            }
+                            Toast.makeText(getContext(), result, Toast.LENGTH_SHORT).show();
+
+                            Toast.makeText(getContext(), colors.get(i), Toast.LENGTH_SHORT).show();
+                        } else {
+                            GradientDrawable d = (GradientDrawable) color_btn[i].getBackground();
+                            // 테두리 안보이게
+                            d.setStroke(0, Color.parseColor("#FFFFFF"));
+                        }
+                    }
+
                 }
             });
         }
 
-        for(int i =0; i<btn_step.length; i++) {
+
+        for (int i = 0; i < btn_step.length; i++) {
             btn_step[i] = rootView.findViewById(btn_step_ids[i]);
-            final String btn_text = (String)btn_step[i].getText();
+            final String btn_text = (String) btn_step[i].getText();
+            final int finalI = i;
             btn_step[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getContext(), btn_text,Toast.LENGTH_SHORT).show();
+
+                    String buttonText = (String) btn_step[finalI].getText().toString();
+
+                    state.setAuto_Step(buttonText);
+
+                    BusProvider.getInstance().post(new BusEvent
+                            (state.getStep(), state.getLed(), state.getBright(), state.getAuto_Step(), state.getAuto_Led()));
+
+                    Toast.makeText(getContext(), btn_text, Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -111,36 +165,34 @@ public class Fragment_Auto extends Fragment {
         auto_sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (auto_sw.isChecked() == true)
-                {
-                    for(int i = 0; i< btn_step.length; i++) {
+                if (auto_sw.isChecked() == true) {
+                    for (int i = 0; i < btn_step.length; i++) {
                         btn_step[i].setEnabled(true);
 
                     }
 
-                    for(int i = 0; i < color_btn.length; i++) {
+                    for (int i = 0; i < color_btn.length; i++) {
                         color_btn[i].setEnabled(true);
                     }
 
                     hope_bright.setTextColor(Color.parseColor("#4D4D4D"));
                     hope_color.setTextColor(Color.parseColor("#4D4D4D"));
 
-                }
-                else
-                    {
-                        for(int i = 0; i< btn_step.length; i++) {
-                            btn_step[i].setEnabled(false);
-                            btn_step[i].setPressed(false);
-                        }
+                } else {
+                    for (int i = 0; i < btn_step.length; i++) {
+                        btn_step[i].setEnabled(false);
+                        btn_step[i].setPressed(false);
+                    }
 
-                        for(int i = 0; i < color_btn.length; i++){
+                    for (int i = 0; i < color_btn.length; i++) {
                         color_btn[i].setEnabled(false);
                         color_btn[i].setPressed(false);
-                        }
-
-                        hope_bright.setTextColor(Color.parseColor("#F4CFC9C9"));
-                        hope_color.setTextColor(Color.parseColor("#F4CFC9C9"));
                     }
+
+
+                    hope_bright.setTextColor(Color.parseColor("#F4CFC9C9"));
+                    hope_color.setTextColor(Color.parseColor("#F4CFC9C9"));
+                }
             }
 
 
@@ -150,4 +202,6 @@ public class Fragment_Auto extends Fragment {
 
     }
 
+
 }
+

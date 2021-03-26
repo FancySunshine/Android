@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
                 } */
                 else if (topic.equals("test")) {
                     state.setStep(Integer.parseInt(message.toString()));
-                    BusProvider.getInstance().post(new BusEvent(state.getStep(), state.getLed(), state.getBright()));
+                    //BusProvider.getInstance().post(new BusEvent(state.getStep(), state.getLed(), state.getBright()));
                 }
                 else if (topic.equals("Reservation/del/success")) {
                     Toast.makeText(getApplicationContext(), "선택한 예약이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 mIndicator.animatePageSelected(position);
-                BusProvider.getInstance().post(new BusEvent(state.getStep(), state.getLed(), state.getBright()));
+                //BusProvider.getInstance().post(new BusEvent(state.getStep(), state.getLed(), state.getBright()));
 
             }
         });

@@ -25,8 +25,7 @@ import org.w3c.dom.Text;
 
 public class Fragment_Main extends Fragment {
 
-    TextView ctn_state, led_bright;
-    String color, auto_color;
+    TextView ctn_state, led_bright,auto_state;
     Button color_btn, color_btn2;
     LinearLayout auto_layout;
 
@@ -44,11 +43,13 @@ public class Fragment_Main extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_main, container, false);
-        ctn_state = rootView.findViewById(R.id.ctn_state);
+        ctn_state = rootView.findViewById(R.id.ctn_state);//수동제어 단계 버튼
+        auto_state = rootView.findViewById(R.id.auto_state);//자동제어 단계 버튼
         color_btn = rootView.findViewById(R.id.color_btn); //수동제어 색상 버튼
         color_btn2 = rootView.findViewById(R.id.color_btn_auto);  //자동제어 색상 버튼
-        auto_layout = rootView.findViewById(R.id.auto_layout);
-        led_bright = rootView.findViewById(R.id.led_bright);
+        auto_layout = rootView.findViewById(R.id.auto_layout); // 자동제어 layout 부분
+        led_bright = rootView.findViewById(R.id.led_bright);//
+
 
         state = (State) getActivity().getApplication();
 
@@ -58,9 +59,9 @@ public class Fragment_Main extends Fragment {
         d.setColor(Color.parseColor(state.getLed()));
 
         // 자동 제어 색상
-        auto_color = "#ffab91";
+        state.setAuto_Led("#ffab91");
         GradientDrawable d_auto = (GradientDrawable) color_btn2.getBackground();
-        d_auto.setColor(Color.parseColor(auto_color));
+        d_auto.setColor(Color.parseColor(state.getAuto_Led()));
 
 
 
@@ -72,11 +73,22 @@ public class Fragment_Main extends Fragment {
     }
     @Subscribe
     public void busStop(BusEvent busEvent) {
+        // 수동 제어 단계
         ctn_state.setText(busEvent.curtain + "단계");
         // 수동 제어 색상
         GradientDrawable d = (GradientDrawable) color_btn.getBackground();
         d.setColor(Color.parseColor(busEvent.led));
+
         led_bright.setText("밝기 : " + busEvent.bright + "%");
+
+        //자동 제어 단계
+        auto_state.setText("자동 단계 : " + busEvent.auto_step);
+
+
+        //자동 제어 색상
+        GradientDrawable d1 = (GradientDrawable) color_btn2.getBackground();
+        d1.setColor(Color.parseColor(busEvent.auto_led));
+
 
     }
     @Override

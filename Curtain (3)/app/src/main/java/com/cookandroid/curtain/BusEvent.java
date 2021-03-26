@@ -1,11 +1,18 @@
 package com.cookandroid.curtain;
 
+import java.util.HashMap;
+import java.util.Map;
+
+
 public class BusEvent {
 
-    int curtain, bright, auto_step;
-    String led, auto_led;
+    int curtain, bright ;
+    String led, auto_led, auto_step;
 
-    public BusEvent(int curtain, String led, int bright) {
+
+    public BusEvent(int curtain, String led, int bright, String auto_step, String auto_led) {
+
+
 
         //수동제어
         this.curtain = curtain;
@@ -15,7 +22,6 @@ public class BusEvent {
         //자동제어
         this.auto_step = auto_step;
         this.auto_led = auto_led;
-
 
     }
 

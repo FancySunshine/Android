@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.Slider;
+import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -32,17 +33,20 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.cookandroid.curtain.BusEvent.*;
 
 
 public class Fragment_Curtain extends Fragment {
 
 
     TextView curtain_step;
-     Slider b_slider; //밝기 슬라이더
+    Slider b_slider; //밝기 슬라이더
     TextView ctr_state; //커튼 단계
     LinearLayout auto_layout; // 자동 제어 데이터 전달 화면
     State state;
-    int step = 0;
 
     MaterialButton[] curtain_steps = new MaterialButton[5];
     MaterialButton max_down, down, up, max_up;
@@ -52,7 +56,7 @@ public class Fragment_Curtain extends Fragment {
             R.id.color_btn5, R.id.color_btn6, R.id.color_btn7, R.id.color_btn8, R.id.color_btn9, R.id.color_btn10};
     ArrayList<String> colors = new ArrayList<>();  // Color 넣어줄 list
 
-
+    Map<String, String> map = new HashMap<String, String>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +71,7 @@ public class Fragment_Curtain extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_curtain, container, false);
         b_slider = rootView.findViewById(R.id.slider);
 
+
         b_slider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
             @Override
             public void onStartTrackingTouch(@NonNull Slider slider) {
@@ -77,8 +82,10 @@ public class Fragment_Curtain extends Fragment {
             public void onStopTrackingTouch(@NonNull Slider slider) {
                 int i = (int) slider.getValue();
                 state.setBright(i);
-                BusProvider.getInstance().post(new BusEvent(state.getStep(), state.getLed(), state.getBright()));
-                try {
+                BusProvider.getInstance().post(new BusEvent
+                        (state.getStep(), state.getLed(), state.getBright(), state.getAuto_Step(), state.getAuto_Led()));
+
+                 try {
                     ((MainActivity) MainActivity.mContext).mqttClient.publish("Led/bright", String.valueOf(i).getBytes(), 0, false);
                 } catch (MqttException e) {
                     e.printStackTrace();
@@ -117,6 +124,10 @@ public class Fragment_Curtain extends Fragment {
                                 // 테두리 지정
                                 d.setStroke(5, Color.parseColor("#FFFFFF"));
                                 state.setLed(colors.get(i));
+
+                                BusProvider.getInstance().post(new BusEvent
+                                        (state.getStep(), state.getLed(), state.getBright(), state.getAuto_Step(), state.getAuto_Led()));
+
 
                                 ArrayList<Integer> rgb = new ArrayList<Integer>();
                                 String result = "";
@@ -168,7 +179,8 @@ public class Fragment_Curtain extends Fragment {
                 state.setStep(0);
 
                 curtain_step.setText(String.valueOf(state.getStep()) + "단계");
-                BusProvider.getInstance().post(new BusEvent(state.getStep(), state.getLed(), state.getBright()));
+                BusProvider.getInstance().post(new BusEvent
+                        (state.getStep(), state.getLed(), state.getBright(), state.getAuto_Step(), state.getAuto_Led()));
 
 
                 try {
@@ -186,7 +198,8 @@ public class Fragment_Curtain extends Fragment {
                     state.setStep(state.getStep() - 1);
 
                     curtain_step.setText(String.valueOf(state.getStep()) + "단계");
-                    BusProvider.getInstance().post(new BusEvent(state.getStep(), state.getLed(), state.getBright()));
+                    BusProvider.getInstance().post(new BusEvent
+                            (state.getStep(), state.getLed(), state.getBright(), state.getAuto_Step(), state.getAuto_Led()));
 
 
                     try {
@@ -203,7 +216,8 @@ public class Fragment_Curtain extends Fragment {
                 if (state.getStep() + 1 < 5) {
                     state.setStep( state.getStep() + 1);
                     curtain_step.setText(String.valueOf(state.getStep()) + "단계");
-                    BusProvider.getInstance().post(new BusEvent(state.getStep(), state.getLed(), state.getBright()));
+                    BusProvider.getInstance().post(new BusEvent
+                            (state.getStep(), state.getLed(), state.getBright(), state.getAuto_Step(), state.getAuto_Led()));
 
 
 
@@ -221,7 +235,8 @@ public class Fragment_Curtain extends Fragment {
                 state.setStep(4);
 
                 curtain_step.setText(String.valueOf(state.getStep()) + "단계");
-                BusProvider.getInstance().post(new BusEvent(state.getStep(), state.getLed(), state.getBright()));
+                BusProvider.getInstance().post(new BusEvent
+                        (state.getStep(), state.getLed(), state.getBright(), state.getAuto_Step(), state.getAuto_Led()));
 
 
                 try {
