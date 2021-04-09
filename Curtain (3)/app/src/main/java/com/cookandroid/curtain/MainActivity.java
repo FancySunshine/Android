@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     MqttAndroidClient mqttClient;
     BottomNavigationView navView;
     LinearLayout lay1, top_lay;
+    TextView lux_avg, now_lux;
     MaterialButton ctr_add, ctr_sel, ctr_del, ctr_all, ctr_cancel;
     public static Context mContext;
     RecyclerView res_lv;
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        BusProvider.getInstance().register(this);
 
 
         // 다른 액티비티에서 MainActivity 함수를 사용하기 위한 문맥(Context) 저장
@@ -111,6 +113,11 @@ public class MainActivity extends AppCompatActivity {
         //action = findViewById(R.id.action);
 
         top_lay = findViewById(R.id.top_lay);
+
+
+        lux_avg = findViewById(R.id.lux_avg);
+
+        now_lux = findViewById(R.id.now_lux);
 
         //예약 추가/삭제 버튼
         ctr_add = findViewById(R.id.ctr_add);
@@ -150,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
 // 서버와 통신하기 위한 MQTT 클라이언트 생성
         Random rnd = new Random();
         int k = rnd.nextInt();
-        mqttClient = new MqttAndroidClient(this, "tcp://172.30.1.16:1883", "Android" + k);
+        mqttClient = new MqttAndroidClient(this, "tcp://172.16.109.63:1883", "Android" + k);
 
 
         try {
@@ -169,7 +176,9 @@ public class MainActivity extends AppCompatActivity {
                         mqttClient.subscribe("Reservation/add/fail", 0);
                         mqttClient.subscribe("Reservation/del/success", 0);
                         mqttClient.subscribe("Reservation/del/fail", 0);
+                        mqttClient.subscribe("Luxdata/avg2", 0);
                         mqttClient.subscribe("RPI/info", 0); // 라즈베리파이 정보 얻어오기
+                        //mqttClient.subscribe("Luxdata/avg",0); //평균 조도 데이터 얻어오기
                         mqttClient.publish("client/connect", id.getBytes(),0, false);
 
 
@@ -221,6 +230,32 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else if(topic.equals("Reservation/del/fail")){
                     Toast.makeText(getApplicationContext(), "삭제할 예약들을 선택해주세요.", Toast.LENGTH_SHORT).show();
+                }
+                // Lux 데이터 값 받아오기
+                else if(topic.equals("Luxdata/avg2")){
+                    JSONArray msg = new JSONArray(message.toString());
+                    now_lux.setText("현재 조도 : " + msg.getJSONObject(0).getString("in"));
+                    BusProvider.getInstance().post(new BusEvent(message.toString()));
+                    /*
+                    JSONArray msg = new JSONArray(message.toString());
+                    String lux = msg.toString().replace("[", "").replace("]", "");
+                    lux_avg.setText(lux);
+                    state.setLux(lux);
+                    BusProvider.getInstance().post(new BusEvent
+                            (state.getLux()));
+
+                     */
+
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("time", String.valueOf(msg));
+
+
+//
+//                    Fragment_Machine fragment = new Fragment_Machine();
+//                    fragment.setArguments(bundle);
+
+
+
                 }
             }
 

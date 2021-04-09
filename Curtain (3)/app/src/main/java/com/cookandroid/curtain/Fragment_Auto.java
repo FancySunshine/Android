@@ -42,6 +42,7 @@ public class Fragment_Auto extends Fragment {
     int offColor;
     //int offColor = (this).getResource().getColor(R.color.offColor);
     TextView hope_bright, hope_color;
+
     Switch auto_sw;
 
     public Fragment_Auto() {
@@ -166,7 +167,16 @@ public class Fragment_Auto extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (auto_sw.isChecked() == true) {
+
+                    int checker = 1;
+                    try {
+                        ((MainActivity) MainActivity.mContext).mqttClient.publish("Auto/check", String.valueOf(checker).getBytes(), 0, false);
+                    } catch (MqttException e) {
+                        e.printStackTrace();
+                    }
+
                     for (int i = 0; i < btn_step.length; i++) {
+
                         btn_step[i].setEnabled(true);
 
                     }
@@ -179,6 +189,14 @@ public class Fragment_Auto extends Fragment {
                     hope_color.setTextColor(Color.parseColor("#4D4D4D"));
 
                 } else {
+
+                    int checker = 0;
+                    try {
+                        ((MainActivity) MainActivity.mContext).mqttClient.publish("Curtain/ctr", String.valueOf(checker).getBytes(), 0, false);
+                    } catch (MqttException e) {
+                        e.printStackTrace();
+                    }
+
                     for (int i = 0; i < btn_step.length; i++) {
                         btn_step[i].setEnabled(false);
                         btn_step[i].setPressed(false);

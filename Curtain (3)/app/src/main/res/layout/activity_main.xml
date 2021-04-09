@@ -103,7 +103,7 @@
 
                     </LinearLayout>
                     <TextView
-                        android:id="@+id/test"
+                        android:id="@+id/now_lux"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
@@ -114,6 +114,14 @@
                         android:gravity="center"
                         android:layout_gravity="center"
                         />
+
+                    <TextView
+                        android:id="@+id/lux_avg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="10dp"
+                        android:textColor="@color/txtColor3"/>
 
                     <androidx.viewpager2.widget.ViewPager2
                         android:id="@+id/viewpager"

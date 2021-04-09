@@ -5,6 +5,7 @@ import android.app.Application;
 public class State extends Application {
     private int step, bright = 0;
     private String led, auto_led, auto_step = "#000000";
+    private String lux = "";
 
     //수동 제어 "단계"
     public int getStep(){
@@ -27,6 +28,9 @@ public class State extends Application {
     //자동제어 "led 생상"
     public String getAuto_Led() { return auto_led;}
     public void setAuto_Led(String auto_led) { this.auto_led = auto_led;}
+    //조도 in,out,time
+    public String getLux() {return lux;}
+    public void setLux(String lux) {this.lux = lux;}
 
 
 

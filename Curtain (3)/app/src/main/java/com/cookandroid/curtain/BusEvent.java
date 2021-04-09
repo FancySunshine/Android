@@ -8,6 +8,7 @@ public class BusEvent {
 
     int curtain, bright ;
     String led, auto_led, auto_step;
+    String lux;
 
 
     public BusEvent(int curtain, String led, int bright, String auto_step, String auto_led) {
@@ -24,6 +25,11 @@ public class BusEvent {
         this.auto_led = auto_led;
 
     }
+
+    public BusEvent(String lux){
+        this.lux = lux;
+    }
+
 
     public int isFlag() {
 
