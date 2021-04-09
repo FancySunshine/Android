@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
 // 서버와 통신하기 위한 MQTT 클라이언트 생성
         Random rnd = new Random();
         int k = rnd.nextInt();
-        mqttClient = new MqttAndroidClient(this, "tcp://172.16.109.63:1883", "Android" + k);
+        mqttClient = new MqttAndroidClient(this, "tcp://172.16.109.245:1883", "Android" + k);
 
 
         try {

@@ -170,15 +170,13 @@ public class Fragment_Auto extends Fragment {
 
                     int checker = 1;
                     try {
-                        ((MainActivity) MainActivity.mContext).mqttClient.publish("Auto/check", String.valueOf(checker).getBytes(), 0, false);
+                        ((MainActivity) MainActivity.mContext).mqttClient.publish("Auto/control", String.valueOf(checker).getBytes(), 0, false);
                     } catch (MqttException e) {
                         e.printStackTrace();
                     }
 
                     for (int i = 0; i < btn_step.length; i++) {
-
                         btn_step[i].setEnabled(true);
-
                     }
 
                     for (int i = 0; i < color_btn.length; i++) {
@@ -192,7 +190,7 @@ public class Fragment_Auto extends Fragment {
 
                     int checker = 0;
                     try {
-                        ((MainActivity) MainActivity.mContext).mqttClient.publish("Curtain/ctr", String.valueOf(checker).getBytes(), 0, false);
+                        ((MainActivity) MainActivity.mContext).mqttClient.publish("Auto/control", String.valueOf(checker).getBytes(), 0, false);
                     } catch (MqttException e) {
                         e.printStackTrace();
                     }
