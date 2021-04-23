@@ -86,7 +86,11 @@ public class Fragment_Curtain extends Fragment {
                         (state.getStep(), state.getLed(), state.getBright(), state.getAuto_Step(), state.getAuto_Led()));
 
                  try {
+<<<<<<< HEAD
                     ((MainActivity) MainActivity.mContext).mqttClient.publish("led/bright", String.valueOf(i).getBytes(), 0, false);
+=======
+                    ((MainActivity) MainActivity.mContext).mqttClient.publish("LED/bright", String.valueOf(i).getBytes(), 0, false);
+>>>>>>> 1721db36e611737a4317677196847e940a867691
                 } catch (MqttException e) {
                     e.printStackTrace();
                 }

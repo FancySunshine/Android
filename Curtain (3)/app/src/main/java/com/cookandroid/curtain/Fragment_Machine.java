@@ -144,7 +144,7 @@ public class Fragment_Machine extends Fragment {
 
                 labels[i] = msg.getJSONObject(i).getString("time");
             }
-           drawChart(labels, out, in);
+            drawChart(labels, out, in);
         }
 
     }
