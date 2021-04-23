@@ -211,10 +211,16 @@ public class Reservation extends AppCompatActivity {
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
                 // 예약이 성공적으로 저장되었을 때, RESULT_OK 코드를 Main Activity로 전달
-                if (topic.equals("Reservation/add/success")) {
+                if (topic.equals("rsv/addres")) {
                     setResult(RESULT_OK);
-                    Toast.makeText(getApplicationContext(), "예약이 성공적으로 저장되었습니다.", Toast.LENGTH_SHORT).show();
-                    finish();
+                    if(message.toString().equals("success")) {
+                        Toast.makeText(getApplicationContext(), "예약이 성공적으로 저장되었습니다.", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                    else if(message.toString().equals("fail")){
+                        Toast.makeText(getApplicationContext(), "예약을 저장하는데 실패했습니다.", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
                 }
             }
 
@@ -255,7 +261,7 @@ public class Reservation extends AppCompatActivity {
                     //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
                     try {
-                        ((MainActivity) MainActivity.mContext).mqttClient.publish("Reservation/add", message.getBytes(), 0, false);
+                        ((MainActivity) MainActivity.mContext).mqttClient.publish("rsv/addreq", message.getBytes(), 0, false);
 
                     } catch (MqttException e) {
                         e.printStackTrace();

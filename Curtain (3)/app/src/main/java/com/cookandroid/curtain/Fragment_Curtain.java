@@ -86,7 +86,7 @@ public class Fragment_Curtain extends Fragment {
                         (state.getStep(), state.getLed(), state.getBright(), state.getAuto_Step(), state.getAuto_Led()));
 
                  try {
-                    ((MainActivity) MainActivity.mContext).mqttClient.publish("Led/bright", String.valueOf(i).getBytes(), 0, false);
+                    ((MainActivity) MainActivity.mContext).mqttClient.publish("led/bright", String.valueOf(i).getBytes(), 0, false);
                 } catch (MqttException e) {
                     e.printStackTrace();
                 }
@@ -142,7 +142,7 @@ public class Fragment_Curtain extends Fragment {
 
                                 }
                                 try {
-                                    ((MainActivity) MainActivity.mContext).mqttClient.publish("LED/color", result.getBytes(), 0, false);
+                                    ((MainActivity) MainActivity.mContext).mqttClient.publish("led/color", result.getBytes(), 0, false);
                                 } catch (MqttException e) {
                                     e.printStackTrace();
                                 }
@@ -184,7 +184,7 @@ public class Fragment_Curtain extends Fragment {
 
 
                 try {
-                    ((MainActivity) MainActivity.mContext).mqttClient.publish("Curtain/ctr", String.valueOf(state.getStep()).getBytes(), 0, false);
+                    ((MainActivity) MainActivity.mContext).mqttClient.publish("ctn/step", String.valueOf(state.getStep()).getBytes(), 0, false);
                 } catch (MqttException e) {
                     e.printStackTrace();
                 }
@@ -203,7 +203,7 @@ public class Fragment_Curtain extends Fragment {
 
 
                     try {
-                        ((MainActivity) MainActivity.mContext).mqttClient.publish("Curtain/ctr", String.valueOf(state.getStep()).getBytes(), 0, false);
+                        ((MainActivity) MainActivity.mContext).mqttClient.publish("ctn/step", String.valueOf(state.getStep()).getBytes(), 0, false);
                     } catch (MqttException e) {
                         e.printStackTrace();
                     }
@@ -222,7 +222,7 @@ public class Fragment_Curtain extends Fragment {
 
 
                     try {
-                        ((MainActivity) MainActivity.mContext).mqttClient.publish("Curtain/ctr", String.valueOf(state.getStep()).getBytes(), 0, false);
+                        ((MainActivity) MainActivity.mContext).mqttClient.publish("ctn/step", String.valueOf(state.getStep()).getBytes(), 0, false);
                     } catch (MqttException e) {
                         e.printStackTrace();
                     }
@@ -240,7 +240,7 @@ public class Fragment_Curtain extends Fragment {
 
 
                 try {
-                    ((MainActivity) MainActivity.mContext).mqttClient.publish("Curtain/ctr", String.valueOf(state.getStep()).getBytes(), 0, false);
+                    ((MainActivity) MainActivity.mContext).mqttClient.publish("ctn/step", String.valueOf(state.getStep()).getBytes(), 0, false);
                 } catch (MqttException e) {
                     e.printStackTrace();
                 }

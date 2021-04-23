@@ -92,11 +92,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     try {
                         if(b) {
-                            ((MainActivity) MainActivity.mContext).mqttClient.publish("Reservation/check",
+                            ((MainActivity) MainActivity.mContext).mqttClient.publish("rsv/check",
                                     (index.getString("Name") + "|1").getBytes(), 0, false);
                         }
                         else{
-                            ((MainActivity) MainActivity.mContext).mqttClient.publish("Reservation/check",
+                            ((MainActivity) MainActivity.mContext).mqttClient.publish("rsv/check",
                                     (index.getString("Name") + "|0").getBytes(), 0, false);
                         }
                     } catch (MqttException|JSONException e) {

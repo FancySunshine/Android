@@ -121,7 +121,7 @@ public class Fragment_Auto extends Fragment {
 
                             }
                             try {
-                                ((MainActivity) MainActivity.mContext).mqttClient.publish("LED/color", result.getBytes(), 0, false);
+                                ((MainActivity) MainActivity.mContext).mqttClient.publish("led/color", result.getBytes(), 0, false);
                             } catch (MqttException e) {
                                 e.printStackTrace();
                             }
@@ -140,15 +140,25 @@ public class Fragment_Auto extends Fragment {
         }
 
 
+        //자동제어 단계
         for (int i = 0; i < btn_step.length; i++) {
             btn_step[i] = rootView.findViewById(btn_step_ids[i]);
             final String btn_text = (String) btn_step[i].getText();
-            final int finalI = i;
+
+            final int finalI = i+1;
+
             btn_step[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
-                    String buttonText = (String) btn_step[finalI].getText().toString();
+                    //자동제어 단계 mqtt를 통해 서버로 전달달
+                    try {
+                        ((MainActivity) MainActivity.mContext).mqttClient.publish("auto/control", String.valueOf(finalI).getBytes(), 0, false);
+                    } catch (MqttException e) {
+                        e.printStackTrace();
+                    }
+
+                    String buttonText = (String) btn_step[finalI - 1].getText().toString();
 
                     state.setAuto_Step(buttonText);
 
@@ -168,9 +178,9 @@ public class Fragment_Auto extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (auto_sw.isChecked() == true) {
 
-                    int checker = 1;
+                    int checker = 3;
                     try {
-                        ((MainActivity) MainActivity.mContext).mqttClient.publish("Auto/check", String.valueOf(checker).getBytes(), 0, false);
+                        ((MainActivity) MainActivity.mContext).mqttClient.publish("auto/control", String.valueOf(checker).getBytes(), 0, false);
                     } catch (MqttException e) {
                         e.printStackTrace();
                     }
@@ -192,7 +202,7 @@ public class Fragment_Auto extends Fragment {
 
                     int checker = 0;
                     try {
-                        ((MainActivity) MainActivity.mContext).mqttClient.publish("Curtain/ctr", String.valueOf(checker).getBytes(), 0, false);
+                        ((MainActivity) MainActivity.mContext).mqttClient.publish("auto/control", String.valueOf(checker).getBytes(), 0, false);
                     } catch (MqttException e) {
                         e.printStackTrace();
                     }

@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         if(resultCode == RESULT_OK){
             try {
                 mqttClient.setCallback(mqttCallback);
-                mqttClient.publish("client/connect", id.getBytes(),0, false);
+                mqttClient.publish("rsv/req", id.getBytes(),0, false);
             } catch (MqttException e) {
                 e.printStackTrace();
             }
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
 // 서버와 통신하기 위한 MQTT 클라이언트 생성
         Random rnd = new Random();
         int k = rnd.nextInt();
-        mqttClient = new MqttAndroidClient(this, "tcp://172.16.109.63:1883", "Android" + k);
+        mqttClient = new MqttAndroidClient(this, "tcp://192.168.15.44:1883", "Android" + k);
 
 
         try {
@@ -171,15 +171,12 @@ public class MainActivity extends AppCompatActivity {
 
                     try {
                         //Topic Subscribe
-                        mqttClient.subscribe("Reservation/list", 0);
-                        mqttClient.subscribe("Reservation/add/success", 0);
-                        mqttClient.subscribe("Reservation/add/fail", 0);
-                        mqttClient.subscribe("Reservation/del/success", 0);
-                        mqttClient.subscribe("Reservation/del/fail", 0);
-                        mqttClient.subscribe("Luxdata/avg2", 0);
-                        mqttClient.subscribe("RPI/info", 0); // 라즈베리파이 정보 얻어오기
-                        //mqttClient.subscribe("Luxdata/avg",0); //평균 조도 데이터 얻어오기
-                        mqttClient.publish("client/connect", id.getBytes(),0, false);
+                        mqttClient.subscribe("rsv/list", 0);
+                        mqttClient.subscribe("rsv/addres", 0);
+                        mqttClient.subscribe("rsv/delres", 0);
+                        mqttClient.subscribe("lux/graph", 0);
+                        mqttClient.subscribe("rpi/info", 0); // 라즈베리파이 정보 얻어오기
+                        mqttClient.publish("rsv/req", id.getBytes(),0, false);
 
 
                     } catch (MqttException e) {
@@ -205,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
                 // Subscribe 한 Topic이 Client에 도착했을 때 콜백
-                if (topic.equals("Reservation/list")){
+                if (topic.equals("rsv/list")){
                     JSONArray msg = new JSONArray(message.toString());
                     adapter = new RecyclerAdapter(getApplicationContext(), msg);
                     //adapter.setCount(msg.length());
@@ -224,15 +221,17 @@ public class MainActivity extends AppCompatActivity {
                     state.setStep(Integer.parseInt(message.toString()));
                     //BusProvider.getInstance().post(new BusEvent(state.getStep(), state.getLed(), state.getBright()));
                 }
-                else if (topic.equals("Reservation/del/success")) {
-                    Toast.makeText(getApplicationContext(), "선택한 예약이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
-                    mqttClient.publish("client/connect", id.getBytes(),0, false);
+                else if (topic.equals("rsv/delres")) {
+                    if(message.toString().equals("success")) {
+                        Toast.makeText(getApplicationContext(), "선택한 예약이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                        mqttClient.publish("rsv/req", id.getBytes(), 0, false);
+                    }else if(message.toString().equals("fail")) {
+                        Toast.makeText(getApplicationContext(), "선택한 예약 삭제를 실패했습니다.", Toast.LENGTH_SHORT).show();
+                    }
                 }
-                else if(topic.equals("Reservation/del/fail")){
-                    Toast.makeText(getApplicationContext(), "삭제할 예약들을 선택해주세요.", Toast.LENGTH_SHORT).show();
-                }
+
                 // Lux 데이터 값 받아오기
-                else if(topic.equals("Luxdata/avg2")){
+                else if(topic.equals("lux/graph")){
                     JSONArray msg = new JSONArray(message.toString());
                     now_lux.setText("현재 조도 : " + msg.getJSONObject(0).getString("in"));
                     BusProvider.getInstance().post(new BusEvent(message.toString()));
@@ -401,7 +400,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         String del = result.toString().replace("[", "").replace("]", "");
                         try {
-                            mqttClient.publish("Reservation/del", del.getBytes(), 0, false);
+                            mqttClient.publish("rsv/delreq", del.getBytes(), 0, false);
                         } catch (MqttException e) {
                             e.printStackTrace();
                         }
