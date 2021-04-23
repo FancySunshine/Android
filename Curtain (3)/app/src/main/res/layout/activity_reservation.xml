@@ -128,7 +128,7 @@
             android:id="@+id/res_memo"
             android:layout_width="match_parent"
             android:layout_height="100dp" />
-        //경계선
+        <!--경계선-->
 
         <View
             android:layout_width="match_parent"
@@ -137,7 +137,7 @@
             android:layout_marginTop="23dp"
             android:layout_marginBottom="23dp"
             android:background="#666363" />
-        //CURTAIN
+        <!--CURTAIN-->
 
         -
 
@@ -190,7 +190,7 @@
             </LinearLayout>
 
         </LinearLayout>
-        //경계선
+        <!--경계선-->
 
         <View
             android:layout_width="match_parent"
@@ -199,7 +199,7 @@
             android:layout_marginTop="23dp"
             android:layout_marginBottom="23dp"
             android:background="#666363" />
-        //LED
+        <!--LED-->
 
         -
 
@@ -230,23 +230,164 @@
             </LinearLayout>
 
 
-            -
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/hope_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="색상"
+                    android:fontFamily="@font/gmarketsansmedium"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/txtColor"
+                    android:textSize="20dp"
+                    />
+
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <include
-                    android:id="@+id/led_layout"
-                    layout="@layout/led_bright_color"
+                android:id="@+id/Led_layout"
+                android:orientation="vertical"
+                >
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginTop="15dp"
+                    >
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/color_btn1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/round"
+                        android:layout_margin="10dp"
+                        />
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/color_btn2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/round"
+                        android:layout_margin="10dp"
+                        />
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/color_btn3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/round"
+                        android:layout_margin="10dp"
+                        />
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/color_btn4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/round"
+                        android:layout_margin="10dp"
+                        />
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/color_btn5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/round"
+                        android:layout_margin="10dp"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginHorizontal="30dp"
+                    >
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/color_btn6"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/round"
+                        android:layout_margin="10dp"
+                        />
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/color_btn7"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/round"
+                        android:layout_margin="10dp"
+                        />
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/color_btn8"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/round"
+                        android:layout_margin="10dp"
+                        />
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/color_btn9"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/round"
+                        android:layout_margin="10dp"
+                        />
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/color_btn10"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/round"
+                        android:layout_margin="10dp"
+                        />
+                </LinearLayout>
 
+
+
+
+
+
+                <TextView
+                    android:id="@+id/hope_bright"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:text="밝기"
+                    android:fontFamily="@font/gmarketsansmedium"
+                    android:textColor="@color/txtColor"
+                    android:textSize="20dp"
+
+                    />
+
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+
+                    android:value="0.0"
+                    android:valueFrom="0.0"
+                    android:valueTo="100.0"
+                    android:stepSize="1"
+                    />
             </LinearLayout>
 
         </LinearLayout>
-        //LED layout 끝
+        <!--LED layout 끝-->
 
 
         <LinearLayout

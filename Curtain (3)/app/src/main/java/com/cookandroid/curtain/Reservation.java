@@ -41,14 +41,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Reservation extends AppCompatActivity {
-    Slider sld_step;
+    Slider sld_step, led_slider;
     TimePicker res_tp;
     TextView hope_bright, hope_color;
     EditText res_name, res_memo;
     MaterialButtonToggleGroup res_mbt;
     Button res_save, res_cancel;
     Switch sw_curtain, sw_led;
-    String message = "";
+    String message = "", selected ="";
+
     // 요일 버튼 Id
 
     int[] mbutton_ids = {R.id.sun, R.id.mon, R.id.tue, R.id.wed, R.id.thu, R.id.fri, R.id.sat};
@@ -62,10 +63,10 @@ public class Reservation extends AppCompatActivity {
             R.id.color_btn5, R.id.color_btn6, R.id.color_btn7, R.id.color_btn8, R.id.color_btn9, R.id.color_btn10};
     ArrayList<String> colors = new ArrayList<>();  // Color 넣어줄 list
 
-    //LED(희망하는 방의 밝기 버튼) 배열
+    /*//LED(희망하는 방의 밝기 버튼) 배열
     com.google.android.material.button.MaterialButton[] btn_step = new com.google.android.material.button.MaterialButton[5];
     int [] btn_step_ids = new int[] {R.id.curtain_step0, R.id.curtain_step1, R.id.curtain_step2, R.id.curtain_step3, R.id.curtain_step4};
-
+*/
 
 
     public static Activity activity;
@@ -89,6 +90,9 @@ public class Reservation extends AppCompatActivity {
         res_mbt = findViewById(R.id.res_mbt);                // 예약 요일 선택 버튼
 
         sld_step = findViewById(R.id.sld_step2);               // 커튼 설정 슬라이드
+        led_slider = findViewById(R.id.slider);
+
+
 
         res_save = findViewById(R.id.res_save);               // 예약 저장
         res_cancel = findViewById(R.id.res_cancel);          // 예약 취소
@@ -140,11 +144,12 @@ public class Reservation extends AppCompatActivity {
             color_btn[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //Toast.makeText(getContext(), colors.get(finalI), Toast.LENGTH_SHORT).show();
+                    setSelected(colors.get(finalI));
+                    Toast.makeText(getApplicationContext(), selected, Toast.LENGTH_SHORT).show();
                 }
             });
         }
-
+/*
         for(int i =0; i<btn_step.length; i++) {
             btn_step[i] = findViewById(btn_step_ids[i]);
             final String btn_text = (String)btn_step[i].getText();
@@ -157,34 +162,29 @@ public class Reservation extends AppCompatActivity {
 
         }
 
-
+*/
         sw_led.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (sw_led.isChecked() == true)
                 {
-                    for(int i = 0; i< btn_step.length; i++) {
-                        btn_step[i].setEnabled(true);
-                    }
-
                     for(int i = 0; i < color_btn.length; i++) {
                         color_btn[i].setEnabled(true);
                     }
 
+                    led_slider.setEnabled(true);
                     hope_bright.setTextColor(Color.parseColor("#4D4D4D"));
                     hope_color.setTextColor(Color.parseColor("#4D4D4D"));
 
                 }
                 else
                 {
-                    for(int i = 0; i< btn_step.length; i++) {
-                        btn_step[i].setEnabled(false);
-                    }
 
                     for(int i = 0; i < color_btn.length; i++){
                         color_btn[i].setEnabled(false);
                     }
 
+                    led_slider.setEnabled(false);
                     hope_bright.setTextColor(Color.parseColor("#F4CFC9C9"));
                     hope_color.setTextColor(Color.parseColor("#F4CFC9C9"));
                 }
@@ -255,10 +255,20 @@ public class Reservation extends AppCompatActivity {
                         }
                     }
 
+                    String led = "";
+                    if(sw_led.isChecked()){
+                        led = String.valueOf((int)led_slider.getValue()) + ", " + selected;
+                    }
+                    else{
+                        led = "-1";
+                    }
+                    //Toast.makeText(getApplicationContext(), String.valueOf(led_slider.getValue()), Toast.LENGTH_SHORT).show();
+
                     message = res_name.getText() + "|" + res_tp.getCurrentHour() + ":" + res_tp.getCurrentMinute() + "|"
-                            + result + "|" + String.valueOf((int) sld_step.getValue())
-                            + "|" + res_memo.getText();
-                    //Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                            + result + "|" + String.valueOf((int) sld_step.getValue() + "|" + led
+                            + "|" + res_memo.getText());
+
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
                     try {
                         ((MainActivity) MainActivity.mContext).mqttClient.publish("rsv/addreq", message.getBytes(), 0, false);
@@ -291,29 +301,8 @@ public class Reservation extends AppCompatActivity {
         colors.add("#b39ddb");
         colors.add("#ce93d8");
 */
-        colors.add("#ffab91");
-        colors.add("#F48FB1");
-        colors.add("#ce93d8");
-        colors.add("#b39ddb");
-        colors.add("#9fa8da");
-        colors.add("#90caf9");
-        colors.add("#81d4fa");
-        colors.add("#80deea");
-        colors.add("#80cbc4");
-        colors.add("#c5e1a5");
 
-        for (int i = 0; i < color_btn.length; i++) {
-            color_btn[i] = findViewById(color_btn_ids[i]);
-            GradientDrawable d = (GradientDrawable) color_btn[i].getBackground();
-            d.setColor(Color.parseColor(colors.get(i)));
-            final int finalI = i;
-            color_btn[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(getApplicationContext(), colors.get(finalI), Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
+
         // intent의 Extra가 있을 때 실행
         // RecyclerAdapter.java 에서 얻은 값들을 이용
         Intent intent = getIntent();
@@ -333,6 +322,9 @@ public class Reservation extends AppCompatActivity {
             sld_step.setValue(Integer.parseInt(intent.getStringExtra("ctr")));
 
         }
+    }
+    public void setSelected(String select){
+        selected = select;
     }
 
 }
