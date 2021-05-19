@@ -151,16 +151,16 @@ public class Fragment_Auto extends Fragment {
                 @Override
                 public void onClick(View view) {
 
-                    //자동제어 단계 mqtt를 통해 서버로 전달달
+                    //자동제어 단계 mqtt를 통해 서버로 전달
                     try {
                         ((MainActivity) MainActivity.mContext).mqttClient.publish("auto/ctr", String.valueOf(finalI).getBytes(), 0, false);
                     } catch (MqttException e) {
                         e.printStackTrace();
                     }
 
-                    String buttonText = (String) btn_step[finalI - 1].getText().toString();
+                    //String buttonText = (String) btn_step[finalI - 1].getText().toString();
 
-                    state.setAuto_Step(buttonText);
+                    state.setAuto_Step(String.valueOf(finalI));
 
                     BusProvider.getInstance().post(new BusEvent
                             (state.getStep(), state.getLed(), state.getBright(), state.getAuto_Step(), state.getAuto_Led()));
@@ -176,14 +176,9 @@ public class Fragment_Auto extends Fragment {
         auto_sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (auto_sw.isChecked() == true) {
+                if (auto_sw.isChecked()) {
 
-                    int checker = 3;
-                    try {
-                        ((MainActivity) MainActivity.mContext).mqttClient.publish("auto/control", String.valueOf(checker).getBytes(), 0, false);
-                    } catch (MqttException e) {
-                        e.printStackTrace();
-                    }
+                    int checker = Integer.parseInt(state.getAuto_Step());
 
                     for (int i = 0; i < btn_step.length; i++) {
 
@@ -194,7 +189,7 @@ public class Fragment_Auto extends Fragment {
                     for (int i = 0; i < color_btn.length; i++) {
                         color_btn[i].setEnabled(true);
                     }
-
+                    btn_step[checker - 1].performClick();
                     hope_bright.setTextColor(Color.parseColor("#4D4D4D"));
                     hope_color.setTextColor(Color.parseColor("#4D4D4D"));
 
@@ -202,7 +197,7 @@ public class Fragment_Auto extends Fragment {
 
                     int checker = 0;
                     try {
-                        ((MainActivity) MainActivity.mContext).mqttClient.publish("auto/control", String.valueOf(checker).getBytes(), 0, false);
+                        ((MainActivity) MainActivity.mContext).mqttClient.publish("auto/ctr", String.valueOf(checker).getBytes(), 0, false);
                     } catch (MqttException e) {
                         e.printStackTrace();
                     }
@@ -225,7 +220,12 @@ public class Fragment_Auto extends Fragment {
 
 
         });
-
+        if (state.getAuto_Step().equals("0")){
+            auto_sw.setChecked(false);
+        }
+        else{
+            auto_sw.setChecked(true);
+        }
         return rootView;
 
     }

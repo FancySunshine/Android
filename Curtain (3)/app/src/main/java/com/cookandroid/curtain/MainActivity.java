@@ -156,9 +156,8 @@ public class MainActivity extends AppCompatActivity {
         res_lv.setAdapter(adapter);
 
 // 서버와 통신하기 위한 MQTT 클라이언트 생성
-        Random rnd = new Random();
-        int k = rnd.nextInt();
-        mqttClient = new MqttAndroidClient(this, "tcp://192.168.15.44:1883", "Android" + k);
+
+        mqttClient = new MqttAndroidClient(this, "tcp://192.168.219.101:1883", "Android");
 
 
         try {
@@ -177,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
                         mqttClient.subscribe("rsv/delres", 0);
                         mqttClient.subscribe("lux/graph", 0);
                         mqttClient.subscribe("rpi/info", 0); // 라즈베리파이 정보 얻어오기
+                        mqttClient.subscribe("auto/step", 0);
                         mqttClient.publish("rsv/req", id.getBytes(),0, false);
 
 
@@ -225,9 +225,19 @@ public class MainActivity extends AppCompatActivity {
                 else if (topic.equals("rsv/delres")) {
                     if(message.toString().equals("success")) {
                         Toast.makeText(getApplicationContext(), "선택한 예약이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                        // 예약 리스트 갱신
                         mqttClient.publish("rsv/req", id.getBytes(), 0, false);
                     }else if(message.toString().equals("fail")) {
                         Toast.makeText(getApplicationContext(), "선택한 예약 삭제를 실패했습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else if (topic.equals("rsv/addres")) {
+                    if(message.toString().equals("success")) {
+                        Toast.makeText(getApplicationContext(), "선택한 예약이 추가되었습니다.", Toast.LENGTH_SHORT).show();
+                        // 예약 리스트 갱신
+                        mqttClient.publish("rsv/req", id.getBytes(), 0, false);
+                    }else if(message.toString().equals("fail")) {
+                        Toast.makeText(getApplicationContext(), "선택한 예약 추가를 실패했습니다.", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -256,6 +266,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+                }
+                else if(topic.equals("auto/step")) {
+                    state.setAuto_Step(message.toString());
                 }
             }
 
