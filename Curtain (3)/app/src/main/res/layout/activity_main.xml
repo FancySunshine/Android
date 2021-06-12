@@ -53,6 +53,7 @@
                     android:background="@color/backColor"
                     app:layout_collapseMode="parallax"
                     >
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

@@ -136,6 +136,19 @@ public class Reservation extends AppCompatActivity {
         hope_bright = findViewById(R.id.hope_bright);
         hope_color = findViewById(R.id.hope_color);
 
+/*
+        for (AppCompatButton appCompatButton : color_btn) {
+            appCompatButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    for (int i = 0; i < color_btn.length; i++) {
+                        if(view.getId() == color_btn[i].getId()){
+                            GradientDrawable d = (GradientDrawable) color_btn[i].getBackground();
+                            // 테두리 지정
+                            d.setStroke(5, Color.parseColor("#000000"));
+                            state.setLed(colors.get(i));
+
+ */
         for(int i = 0; i < color_btn.length; i++){
             color_btn[i] = findViewById(color_btn_ids[i]);
             GradientDrawable d = (GradientDrawable) color_btn[i].getBackground();
@@ -145,7 +158,19 @@ public class Reservation extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     setSelected(colors.get(finalI));
-                    Toast.makeText(getApplicationContext(), selected, Toast.LENGTH_SHORT).show();
+                    for (int i = 0; i < color_btn.length; i++) {
+
+                        if(view.getId() == color_btn[i].getId()) {
+                            GradientDrawable d = (GradientDrawable) color_btn[i].getBackground();
+                            // 테두리 지정
+                            d.setStroke(5, Color.parseColor("#000000"));
+                        }
+                        else{
+                            GradientDrawable d = (GradientDrawable) color_btn[i].getBackground();
+                            // 테두리 안보이게
+                            d.setStroke(0, Color.parseColor("#FFFFFF"));
+                        }
+                    }
                 }
             });
         }
@@ -182,6 +207,9 @@ public class Reservation extends AppCompatActivity {
 
                     for(int i = 0; i < color_btn.length; i++){
                         color_btn[i].setEnabled(false);
+                        GradientDrawable d = (GradientDrawable) color_btn[i].getBackground();
+                        // 테두리 안보이게
+                        d.setStroke(0, Color.parseColor("#FFFFFF"));
                     }
 
                     led_slider.setEnabled(false);
@@ -192,6 +220,15 @@ public class Reservation extends AppCompatActivity {
 
         });
 
+        // 비활성화
+        sld_step.setEnabled(false);
+        for(int i = 0; i < color_btn.length; i++){
+            color_btn[i].setEnabled(false);
+        }
+
+        led_slider.setEnabled(false);
+        hope_bright.setTextColor(Color.parseColor("#F4CFC9C9"));
+        hope_color.setTextColor(Color.parseColor("#F4CFC9C9"));
 
         sld_step.setLabelFormatter(new LabelFormatter() {        // 커튼 단계별 텍스트 표시
             @NonNull
@@ -240,11 +277,11 @@ public class Reservation extends AppCompatActivity {
         res_save.setOnClickListener(new View.OnClickListener() {       // 예약 정보 저장 이벤트
             @Override
             public void onClick(View view) {
+
                 if (res_name.getText().toString().equals("")) {         // 예약 이름 미설정시 이벤트
                     Toast.makeText(getApplicationContext(), "이름을 입력해주세요", Toast.LENGTH_SHORT).show();
                 }
                 else {                   // 선택된 요일값 받아오기
-
                     String result = "";
                     for(int i = 0; i < mbutton.length; i++){
                         if(mbutton[i].isChecked()){
@@ -254,10 +291,16 @@ public class Reservation extends AppCompatActivity {
                             result += "0";
                         }
                     }
+                    int ctnvalue = -1;
+                    if(sw_curtain.isChecked()){
+                        ctnvalue = (int)sld_step.getValue();
+                    }
 
+
+                    // led 값 받아오기
                     String led = "";
                     if(sw_led.isChecked()){
-                        led = String.valueOf((int)led_slider.getValue()) + ", " + selected;
+                        led = String.valueOf((int)led_slider.getValue()) + "," + selected;
                     }
                     else{
                         led = "-1";
@@ -265,7 +308,7 @@ public class Reservation extends AppCompatActivity {
                     //Toast.makeText(getApplicationContext(), String.valueOf(led_slider.getValue()), Toast.LENGTH_SHORT).show();
 
                     message = res_name.getText() + "|" + res_tp.getCurrentHour() + ":" + res_tp.getCurrentMinute() + "|"
-                            + result + "|" + String.valueOf((int) sld_step.getValue() + "|" + led
+                            + result + "|" + String.valueOf(ctnvalue + "|" + led
                             + "|" + res_memo.getText());
 
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
@@ -319,8 +362,27 @@ public class Reservation extends AppCompatActivity {
             res_name.setText(intent.getStringExtra("Name"));
             res_name.setEnabled(false);
             res_memo.setText(intent.getStringExtra("Memo"));
-            sld_step.setValue(Integer.parseInt(intent.getStringExtra("ctr")));
-
+            int ctrvalue = Integer.parseInt(intent.getStringExtra("ctr"));
+            if(ctrvalue == -1){
+                sld_step.setEnabled(false);
+            }
+            else {
+                sw_curtain.setChecked(true);
+                sld_step.setEnabled(true);
+                sld_step.setValue(Integer.parseInt(intent.getStringExtra("ctr")));
+            }
+            String led = intent.getStringExtra("led");
+            if(!led.equals("-1")){
+                sw_led.setChecked(true);
+                String[] ledinfo = led.split(",");
+                led_slider.setValue(Float.parseFloat(ledinfo[0]));
+                Toast.makeText(getApplicationContext(), ledinfo[1], Toast.LENGTH_SHORT).show();
+                for(int i = 0; i < colors.size(); i++){
+                    if(colors.get(i).equals(ledinfo[1])){
+                        color_btn[i].performClick();
+                    }
+                }
+            }
         }
     }
     public void setSelected(String select){

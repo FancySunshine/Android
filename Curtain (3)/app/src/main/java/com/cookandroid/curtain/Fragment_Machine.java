@@ -101,7 +101,7 @@ public class Fragment_Machine extends Fragment {
 
 
         chart = rootView.findViewById(R.id.line_chart);
-
+        chart.setTouchEnabled(false);
 
         ArrayList<Entry> values = new ArrayList<>();
         ArrayList<Entry> values1 = new ArrayList<>();
@@ -137,13 +137,14 @@ public class Fragment_Machine extends Fragment {
             ArrayList<Entry> in = new ArrayList<>();
             String[] labels = new String[msg.length()];
             for (int i = 0; i < msg.length(); i++) {
-                //랜덤으로 데이터 받아옴
+
                 out.add(new Entry(i, Float.parseFloat(msg.getJSONObject(i).getString("out"))));
 
                 in.add(new Entry(i, Float.parseFloat(msg.getJSONObject(i).getString("in"))));
 
                 labels[i] = msg.getJSONObject(i).getString("time");
             }
+
             drawChart(labels, out, in);
         }
 
@@ -188,6 +189,7 @@ public class Fragment_Machine extends Fragment {
 
         // set data
         chart.setData(data);
+        chart.invalidate();
     }
 
 

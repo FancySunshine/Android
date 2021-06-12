@@ -179,7 +179,9 @@ public class Fragment_Auto extends Fragment {
                 if (auto_sw.isChecked()) {
 
                     int checker = Integer.parseInt(state.getAuto_Step());
-
+                    if (checker == 0){
+                        checker = 3;
+                    }
                     for (int i = 0; i < btn_step.length; i++) {
 
                         btn_step[i].setEnabled(true);

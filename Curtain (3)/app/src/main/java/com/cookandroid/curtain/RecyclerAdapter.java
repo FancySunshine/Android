@@ -123,6 +123,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                         intent.putExtra("ctr", index.getString("ctr"));
                         intent.putExtra("dayofweek", index.getString("dayofweek"));
                         intent.putExtra("Memo", index.getString("Memo"));
+                        intent.putExtra("led", index.getString("led"));
                         // Main Activity의 함수를 이용하여 성공적으로 저장했다는 코드가 오면 예약리스트 갱신
                         ((MainActivity) MainActivity.mContext).startActivityForResult(intent, 0);
                     }

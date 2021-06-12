@@ -8,38 +8,26 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.Slider;
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.cookandroid.curtain.BusEvent.*;
 
-
-public class Fragment_Curtain extends Fragment {
+public class Fragment_Control extends Fragment {
 
 
     TextView curtain_step;
@@ -68,7 +56,7 @@ public class Fragment_Curtain extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_curtain, container, false);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_control, container, false);
         b_slider = rootView.findViewById(R.id.slider);
 
 
@@ -122,7 +110,7 @@ public class Fragment_Curtain extends Fragment {
                             if(view.getId() == color_btn[i].getId()){
                                 GradientDrawable d = (GradientDrawable) color_btn[i].getBackground();
                                 // 테두리 지정
-                                d.setStroke(5, Color.parseColor("#FFFFFF"));
+                                d.setStroke(5, Color.parseColor("#000000"));
                                 state.setLed(colors.get(i));
 
                                 BusProvider.getInstance().post(new BusEvent
@@ -146,9 +134,7 @@ public class Fragment_Curtain extends Fragment {
                                 } catch (MqttException e) {
                                     e.printStackTrace();
                                 }
-                                Toast.makeText(getContext(), result, Toast.LENGTH_SHORT).show();
 
-                                Toast.makeText(getContext(), colors.get(i), Toast.LENGTH_SHORT).show();
                             }
                             else{
                                 GradientDrawable d = (GradientDrawable) color_btn[i].getBackground();

@@ -10,7 +10,7 @@ public class ControlAdapter extends FragmentStateAdapter {
     Fragment[] frags = new Fragment[]{
             new Fragment_Machine(),
             new Fragment_Main(),
-            new Fragment_Curtain(),
+            new Fragment_Control(),
             new Fragment_Auto()
 
     };

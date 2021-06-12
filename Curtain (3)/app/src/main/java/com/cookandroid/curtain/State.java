@@ -4,7 +4,7 @@ import android.app.Application;
 
 public class State extends Application {
     private int step, bright = 0;
-    private String led, auto_led, auto_step = "3";
+    private String led, auto_led, auto_step = "0";
     private String lux = "";
 
     //수동 제어 "단계"

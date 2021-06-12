@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
         fm = (Fragment_Main) getSupportFragmentManager().findFragmentById(R.id.frag_curtain);
 
-
+/*
         JSONArray msg = null;
         try {
             msg = new JSONArray("[{\"Name\":\"tctc6g6\",\"StartTime\":\"18:2\",\"ctr\":1,\"dayofweek\":\"1111111\",\"Memo\":\"\",\"curtain_num\":null,\"chk_state\":0},{\"Name\":\"w818w\",\"StartTime\":\"17:53\",\"ctr\":0,\"dayofweek\":\"0000111\",\"Memo\":\"\",\"curtain_num\":null,\"chk_state\":0},{\"Name\":\"공부\",\"StartTime\":\"9:1\",\"ctr\":2,\"dayofweek\":\"1011111\",\"Memo\":\"4\",\"curtain_num\":null,\"chk_state\":0},{\"Name\":\"댜댜더더\",\"StartTime\":\"19:0\",\"ctr\":2,\"dayofweek\":\"1100101\",\"Memo\":\"너머재재재\",\"curtain_num\":null,\"chk_state\":0},{\"Name\":\"도현도\",\"StartTime\":\"20:16\",\"ctr\":2,\"dayofweek\":\"1000100\",\"Memo\":\"\",\"curtain_num\":null,\"chk_state\":0}]");
@@ -154,10 +154,10 @@ public class MainActivity extends AppCompatActivity {
         //adapter.setCount(msg.length());
         //adapter.setData(msg);
         res_lv.setAdapter(adapter);
-
+*/
 // 서버와 통신하기 위한 MQTT 클라이언트 생성
-
-        mqttClient = new MqttAndroidClient(this, "tcp://192.168.219.101:1883", "Android");
+        int rnd = (int) (Math.random() * 1000);
+        mqttClient = new MqttAndroidClient(this, "tcp://172.30.1.51:1883", "Android" + rnd);
 
 
         try {
@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
                 // Lux 데이터 값 받아오기
                 else if(topic.equals("lux/graph")){
                     JSONArray msg = new JSONArray(message.toString());
-                    now_lux.setText("현재 조도 : " + msg.getJSONObject(0).getString("in"));
+                    now_lux.setText("현재 조도 : " + msg.getJSONObject(msg.length() - 1).getString("in"));
                     BusProvider.getInstance().post(new BusEvent(message.toString()));
                     /*
                     JSONArray msg = new JSONArray(message.toString());
@@ -282,11 +282,18 @@ public class MainActivity extends AppCompatActivity {
         mqttClient.setCallback(mqttCallback);
         //ViewPager2
         mPager = findViewById(R.id.viewpager);
+        mPager.post(new Runnable() {
+            @Override
+            public void run() {
+                mPager.setCurrentItem(1, true);
+
+            }
+        });
         pageAdapter = new ControlAdapter(this, num_page);
         mPager.setAdapter(pageAdapter);
         mIndicator = findViewById(R.id.indicator);
         mIndicator.setViewPager(mPager);
-        mIndicator.createIndicators(num_page, 0);
+        mIndicator.createIndicators(num_page, 1);
         mPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         mPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
