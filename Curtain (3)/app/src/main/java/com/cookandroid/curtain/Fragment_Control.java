@@ -240,8 +240,9 @@ public class Fragment_Control extends Fragment {
 
     @Subscribe
     public void busStop(BusEvent busEvent) {
-        curtain_step.setText(busEvent.curtain + "단계");
-
+        if(busEvent.flag) {
+            curtain_step.setText(busEvent.curtain + "단계");
+        }
     }
     @Override
     public void onDestroy() {
