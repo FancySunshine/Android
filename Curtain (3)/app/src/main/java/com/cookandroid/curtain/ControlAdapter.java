@@ -12,7 +12,6 @@ public class ControlAdapter extends FragmentStateAdapter {
             new Fragment_Main(),
             new Fragment_Control(),
             new Fragment_Auto()
-
     };
 
     public ControlAdapter(@NonNull FragmentActivity fragmentActivity, int count) {

@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
 */
 // 서버와 통신하기 위한 MQTT 클라이언트 생성
         int rnd = (int) (Math.random() * 1000);
-        mqttClient = new MqttAndroidClient(this, "tcp://192.168.60.248:1883", "Android" + rnd);
+        mqttClient = new MqttAndroidClient(this, "tcp://172.16.101.145:1883", "Android" + rnd);
 
 
         try {
@@ -175,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
                         mqttClient.subscribe("rsv/addres", 0);
                         mqttClient.subscribe("rsv/delres", 0);
                         mqttClient.subscribe("lux/graph", 0);
+                        mqttClient.subscribe("lux/graph1", 0);
                         mqttClient.subscribe("rpi/info", 0); // 라즈베리파이 정보 얻어오기
                         mqttClient.subscribe("auto/step", 0);
                         mqttClient.publish("rsv/req", id.getBytes(),0, false);
@@ -245,27 +246,13 @@ public class MainActivity extends AppCompatActivity {
                 else if(topic.equals("lux/graph")){
                     JSONArray msg = new JSONArray(message.toString());
                     now_lux.setText("현재 조도 : " + msg.getJSONObject(msg.length() - 1).getString("in"));
+
+
+                }else if(topic.equals("lux/graph1")) {
                     BusProvider.getInstance().post(new BusEvent(message.toString()));
-                    /*
-                    JSONArray msg = new JSONArray(message.toString());
-                    String lux = msg.toString().replace("[", "").replace("]", "");
-                    lux_avg.setText(lux);
-                    state.setLux(lux);
-                    BusProvider.getInstance().post(new BusEvent
-                            (state.getLux()));
 
-                     */
-
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString("time", String.valueOf(msg));
-
-
-//
-//                    Fragment_Machine fragment = new Fragment_Machine();
-//                    fragment.setArguments(bundle);
-
-
-
+                    //Fragment_Machine fm = new Fragment_Machine();//추가
+                    //fm.busStop(new BusEvent(message.toString()));//추가
                 }
                 else if(topic.equals("auto/step")) {
                     state.setAuto_Step(message.toString());
