@@ -245,10 +245,11 @@ public class MainActivity extends AppCompatActivity {
                 // Lux 데이터 값 받아오기
                 else if(topic.equals("lux/graph")){
                     JSONArray msg = new JSONArray(message.toString());
-                    now_lux.setText("현재 조도 : " + msg.getJSONObject(msg.length() - 1).getString("in"));
+                    now_lux.setText("실내 조도 : " + msg.getJSONObject(msg.length() - 1).getString("in"));
 
 
                 }else if(topic.equals("lux/graph1")) {
+                    JSONArray msg = new JSONArray(message.toString());
                     BusProvider.getInstance().post(new BusEvent(message.toString()));
 
                     //Fragment_Machine fm = new Fragment_Machine();//추가

@@ -53,7 +53,7 @@ public class Fragment_Machine extends Fragment {
         ArrayList<Entry> values = new ArrayList<>();
         ArrayList<Entry> values1 = new ArrayList<>();
 
-
+        //busStop(new BusEvent());
 //        String strtext = getArguments().getString("time");
 //
 //        state.getLux();
@@ -77,23 +77,23 @@ public class Fragment_Machine extends Fragment {
 
     @Subscribe
     public void busStop(BusEvent busEvent) throws JSONException {
-        if(busEvent.lux != null){
+        if(busEvent.lux != null) {
 
             //Toast.makeText(getContext(), busEvent.lux, Toast.LENGTH_SHORT).show();
             JSONArray msg = new JSONArray(busEvent.lux);
             ArrayList<Entry> out = new ArrayList<>();
+            ArrayList<Entry> in = new ArrayList<>();
             String[] labels = new String[msg.length()];
 
             for (int i = 0; i < 8; i++) {
                 out.add(new Entry(i, Float.parseFloat(msg.getJSONObject(i).getString("out"))));
+                in.add(new Entry(i, Float.parseFloat(msg.getJSONObject(i).getString("in"))));
+
                 labels[i] = msg.getJSONObject(i).getString("time").substring(11, 13) + "시";
-
-                    //labels[i] = labels[i].substring(6,8) + "시";
+                //labels[i] = labels[i].substring(6,8) + "시";
             }
-
-            drawChart(labels, out);
+            drawChart(labels, out, in);
         }
-
     }
 
     @Override
@@ -103,18 +103,23 @@ public class Fragment_Machine extends Fragment {
 
     }
 
-    public void drawChart(String[] time, ArrayList<Entry> out) {
-        LineDataSet set1 = new LineDataSet(out, "외부조도값");
+    public void drawChart(String[] time, ArrayList<Entry> out, ArrayList<Entry> in) {
+        LineDataSet set1 = new LineDataSet(out, "외부조도");
+        LineDataSet set2 = new LineDataSet(in, "내부조도");
 
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1); // add the data sets
-
+        dataSets.add(set2);
         // create a data object with the data sets
+
         LineData data = new LineData(dataSets);
 
         // black lines and points
         set1.setColor(Color.BLUE);
         set1.setCircleColor(Color.BLUE);
+
+        set2.setColor(Color.RED);
+        set2.setCircleColor(Color.RED);
 
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
@@ -123,10 +128,13 @@ public class Fragment_Machine extends Fragment {
         xAxis.setGranularity(1f);
         xAxis.setGranularityEnabled(true);
 
+        //data.notifyDataChanged();
+        //chart.notifyDataSetChanged();
 
         // set data
         chart.setData(data);
         chart.invalidate();
+
     }
 
 
