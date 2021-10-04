@@ -41,7 +41,7 @@ public class Fragment_Auto extends Fragment {
 
     int offColor;
     //int offColor = (this).getResource().getColor(R.color.offColor);
-    TextView hope_bright, hope_color;
+    TextView hope_bright, hope_color, auto_text;
 
     Switch auto_sw;
 
@@ -67,8 +67,12 @@ public class Fragment_Auto extends Fragment {
         hope_color = rootView.findViewById(R.id.hope_color);
 
 
+
+
         auto_sw = rootView.findViewById(R.id.auto_sw);
         color_layout = rootView.findViewById(R.id.colorpicker_base);
+
+        auto_text = rootView.findViewById(R.id.auto_text);
 
         offColor = (this).getResources().getColor(R.color.offColor);
 
@@ -194,6 +198,7 @@ public class Fragment_Auto extends Fragment {
                     btn_step[checker - 1].performClick();
                     hope_bright.setTextColor(Color.parseColor("#4D4D4D"));
                     hope_color.setTextColor(Color.parseColor("#4D4D4D"));
+                    auto_text.setTextColor(Color.parseColor("#4D4D4D"));
 
                 } else {
 
@@ -214,7 +219,7 @@ public class Fragment_Auto extends Fragment {
                         color_btn[i].setPressed(false);
                     }
 
-
+                    auto_text.setTextColor(Color.parseColor("#F4CFC9C9"));
                     hope_bright.setTextColor(Color.parseColor("#F4CFC9C9"));
                     hope_color.setTextColor(Color.parseColor("#F4CFC9C9"));
                 }

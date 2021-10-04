@@ -8,5 +8,6 @@
     <color name="txtColor3">#D9D9D9</color> //작은 글씨
     <color name="backColor">#FFFFFF</color>
     <color name="offColor">#F4CFC9C9</color>
+    <color name="txtColor4">#B7AEAE</color>
 
 </resources>

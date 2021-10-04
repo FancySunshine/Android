@@ -7,8 +7,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragment_Control"
     android:orientation="vertical"
-    android:background="@color/backColor"
-    android:id="@+id/CurtainLed">
+    android:id="@+id/CurtainLed"
+    android:background="@drawable/corner1">
 
 
 

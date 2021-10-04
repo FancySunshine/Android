@@ -10,6 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     tools:context=".Fragment_Machine"
+    android:background="@drawable/corner1"
     >
 
     <com.github.mikephil.charting.charts.LineChart

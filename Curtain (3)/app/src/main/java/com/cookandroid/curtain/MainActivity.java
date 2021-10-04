@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     MqttAndroidClient mqttClient;
     BottomNavigationView navView;
     LinearLayout lay1, top_lay;
-    TextView lux_avg, now_lux;
+    TextView lux_avg, now_lux, textBrightness;
     MaterialButton ctr_add, ctr_sel, ctr_del, ctr_all, ctr_cancel;
     public static Context mContext;
     RecyclerView res_lv;
@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         lux_avg = findViewById(R.id.lux_avg);
 
         now_lux = findViewById(R.id.now_lux);
+        textBrightness = findViewById(R.id.textBrightness);
 
         //예약 추가/삭제 버튼
         ctr_add = findViewById(R.id.ctr_add);
@@ -245,8 +246,18 @@ public class MainActivity extends AppCompatActivity {
                 // Lux 데이터 값 받아오기
                 else if(topic.equals("lux/graph")){
                     JSONArray msg = new JSONArray(message.toString());
-                    now_lux.setText("실내 조도 : " + msg.getJSONObject(msg.length() - 1).getString("in"));
+                    int currentBrightness = Integer.parseInt(msg.getJSONObject(msg.length() -1).getString("in"));
+                    //현재 방안 조도 값
+                    now_lux.setText("실내 조도 : " + currentBrightness);
 
+                    //조도값에 따른 단계 표시
+                    switch(currentBrightness/200) {
+                        case 0:textBrightness.setText("매우어두움"); break;
+                        case 1:textBrightness.setText("어두움"); break;
+                        case 2:textBrightness.setText("보통"); break;
+                        case 3:textBrightness.setText("밝음"); break;
+                        default:textBrightness.setText("매우밝음"); break;
+                    }
 
                 }else if(topic.equals("lux/graph1")) {
                     JSONArray msg = new JSONArray(message.toString());

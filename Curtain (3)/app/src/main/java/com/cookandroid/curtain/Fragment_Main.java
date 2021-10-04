@@ -77,6 +77,7 @@ public class Fragment_Main extends Fragment {
         // 수동 제어 단계
         if(busEvent.flag) {
             ctn_state.setText(busEvent.curtain + "단계");
+
             // 수동 제어 색상
             GradientDrawable d = (GradientDrawable) color_btn.getBackground();
             d.setColor(Color.parseColor(busEvent.led));

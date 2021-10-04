@@ -131,9 +131,11 @@ public class Fragment_Machine extends Fragment {
         //data.notifyDataChanged();
         //chart.notifyDataSetChanged();
 
+
         // set data
         chart.setData(data);
         chart.invalidate();
+        chart.setDescription(null);
 
     }
 

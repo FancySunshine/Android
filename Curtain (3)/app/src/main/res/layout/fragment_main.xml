@@ -3,8 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backColor"
+    android:background="@drawable/corner1"
     tools:context=".Fragment_Main">
+
+
 
 
 
@@ -12,7 +14,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="20dp"
+        >
 
         <View
             android:layout_width="match_parent"
@@ -26,6 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
             >
             <LinearLayout
                 android:layout_width="match_parent"
@@ -36,20 +41,20 @@
                 <ImageView
                     android:id="@+id/img_cutton"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_height="190dp"
                     android:layout_weight="1"
-                    android:src="@drawable/cutton_img3" />
+                    android:src="@drawable/curtain123456" />
                 <TextView
                     android:id="@+id/ctn_state"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
-                    android:text="단계: 단계"
+                    android:text="0단계"
                     android:layout_weight="1"
                     android:layout_marginTop="5dp"
                     android:fontFamily="@font/gmarketsansmedium"
                     android:textColor="@color/txtColor"
-                    android:textSize="20dp" />
+                    android:textSize="17dp" />
 
 
 
@@ -63,9 +68,9 @@
                 <ImageView
                     android:id="@+id/img_led"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_height="190dp"
                     android:layout_weight="1"
-                    android:src="@drawable/led_img2" />
+                    android:src="@drawable/led12345" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -80,7 +85,7 @@
                         android:text="색상: "
                         android:fontFamily="@font/gmarketsansmedium"
                         android:textColor="@color/txtColor"
-                        android:textSize="20dp" />
+                        android:textSize="17dp" />
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/color_btn"
@@ -96,10 +101,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:text="밝기 : 70%"
+                        android:text="밝기: 70%"
                         android:fontFamily="@font/gmarketsansmedium"
                         android:textColor="@color/txtColor"
-                        android:textSize="20dp" />
+                        android:textSize="16.5dp" />
 
                 </LinearLayout>
             </LinearLayout>
