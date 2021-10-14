@@ -72,8 +72,11 @@ public class Fragment_Control extends Fragment {
                 state.setBright(i);
                 BusProvider.getInstance().post(new BusEvent
                         (state.getStep(), state.getLed(), state.getBright(), state.getAuto_Step(), state.getAuto_Led()));
+                //자동 제어 off
+                BusProvider.getInstance().post(new BusEvent(false));
 
-                 try {
+                try {
+
                     ((MainActivity) MainActivity.mContext).mqttClient.publish("led/bright", String.valueOf((float)i * 0.01).getBytes(), 0, false);
                 } catch (MqttException e) {
                     e.printStackTrace();
@@ -107,40 +110,42 @@ public class Fragment_Control extends Fragment {
                 @Override
                 public void onClick(View view) {
                     for (int i = 0; i < color_btn.length; i++) {
-                            if(view.getId() == color_btn[i].getId()){
-                                GradientDrawable d = (GradientDrawable) color_btn[i].getBackground();
-                                // 테두리 지정
-                                d.setStroke(5, Color.parseColor("#000000"));
-                                state.setLed(colors.get(i));
+                        if(view.getId() == color_btn[i].getId()){
+                            GradientDrawable d = (GradientDrawable) color_btn[i].getBackground();
+                            // 테두리 지정
+                            d.setStroke(5, Color.parseColor("#000000"));
+                            state.setLed(colors.get(i));
 
-                                BusProvider.getInstance().post(new BusEvent
-                                        (state.getStep(), state.getLed(), state.getBright(), state.getAuto_Step(), state.getAuto_Led()));
+                            BusProvider.getInstance().post(new BusEvent
+                                    (state.getStep(), state.getLed(), state.getBright(), state.getAuto_Step(), state.getAuto_Led()));
+                            //자동 제어 off
+                            BusProvider.getInstance().post(new BusEvent(false));
 
-
-                                ArrayList<Integer> rgb = new ArrayList<Integer>();
-                                String result = "";
-                                for(int j = 1; j <= 3; j++){
-                                    rgb.add(Integer.parseInt(colors.get(i).substring(2 * j - 1, 2 * j + 1), 16));
-                                }
-                                for(int k = 0; k < rgb.size(); k++){
-                                    result += String.valueOf(rgb.get(k));
-                                    if(k < rgb.size() - 1){
-                                        result += "|";
-                                    }
-
-                                }
-                                try {
-                                    ((MainActivity) MainActivity.mContext).mqttClient.publish("led/color", result.getBytes(), 0, false);
-                                } catch (MqttException e) {
-                                    e.printStackTrace();
+                            ArrayList<Integer> rgb = new ArrayList<Integer>();
+                            String result = "";
+                            for(int j = 1; j <= 3; j++){
+                                rgb.add(Integer.parseInt(colors.get(i).substring(2 * j - 1, 2 * j + 1), 16));
+                            }
+                            for(int k = 0; k < rgb.size(); k++){
+                                result += String.valueOf(rgb.get(k));
+                                if(k < rgb.size() - 1){
+                                    result += "|";
                                 }
 
                             }
-                            else{
-                                GradientDrawable d = (GradientDrawable) color_btn[i].getBackground();
-                                // 테두리 안보이게
-                                d.setStroke(0, Color.parseColor("#FFFFFF"));
+                            try {
+                                ((MainActivity) MainActivity.mContext).mqttClient.publish("led/color", result.getBytes(), 0, false);
+
+                            } catch (MqttException e) {
+                                e.printStackTrace();
                             }
+
+                        }
+                        else{
+                            GradientDrawable d = (GradientDrawable) color_btn[i].getBackground();
+                            // 테두리 안보이게
+                            d.setStroke(0, Color.parseColor("#FFFFFF"));
+                        }
                     }
 
                 }
@@ -167,7 +172,8 @@ public class Fragment_Control extends Fragment {
                 curtain_step.setText(String.valueOf(state.getStep()) + "단계");
                 BusProvider.getInstance().post(new BusEvent
                         (state.getStep(), state.getLed(), state.getBright(), state.getAuto_Step(), state.getAuto_Led()));
-
+                //자동 제어 off
+                BusProvider.getInstance().post(new BusEvent(false));
 
                 try {
                     ((MainActivity) MainActivity.mContext).mqttClient.publish("ctn/step", String.valueOf(state.getStep()).getBytes(), 0, false);
@@ -186,7 +192,8 @@ public class Fragment_Control extends Fragment {
                     curtain_step.setText(String.valueOf(state.getStep()) + "단계");
                     BusProvider.getInstance().post(new BusEvent
                             (state.getStep(), state.getLed(), state.getBright(), state.getAuto_Step(), state.getAuto_Led()));
-
+                    //자동 제어 off
+                    BusProvider.getInstance().post(new BusEvent(false));
 
                     try {
                         ((MainActivity) MainActivity.mContext).mqttClient.publish("ctn/step", String.valueOf(state.getStep()).getBytes(), 0, false);
@@ -204,7 +211,8 @@ public class Fragment_Control extends Fragment {
                     curtain_step.setText(String.valueOf(state.getStep()) + "단계");
                     BusProvider.getInstance().post(new BusEvent
                             (state.getStep(), state.getLed(), state.getBright(), state.getAuto_Step(), state.getAuto_Led()));
-
+                    //자동 제어 off
+                    BusProvider.getInstance().post(new BusEvent(false));
 
 
                     try {
@@ -223,6 +231,9 @@ public class Fragment_Control extends Fragment {
                 curtain_step.setText(String.valueOf(state.getStep()) + "단계");
                 BusProvider.getInstance().post(new BusEvent
                         (state.getStep(), state.getLed(), state.getBright(), state.getAuto_Step(), state.getAuto_Led()));
+
+                //자동 제어 off
+                BusProvider.getInstance().post(new BusEvent(false));
 
 
                 try {

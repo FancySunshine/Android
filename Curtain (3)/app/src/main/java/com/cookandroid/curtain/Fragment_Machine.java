@@ -85,11 +85,11 @@ public class Fragment_Machine extends Fragment {
             ArrayList<Entry> in = new ArrayList<>();
             String[] labels = new String[msg.length()];
 
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < msg.length(); i++) {
                 out.add(new Entry(i, Float.parseFloat(msg.getJSONObject(i).getString("out"))));
                 in.add(new Entry(i, Float.parseFloat(msg.getJSONObject(i).getString("in"))));
 
-                labels[i] = msg.getJSONObject(i).getString("time").substring(11, 13) + "시";
+                labels[i] = msg.getJSONObject(i).getString("time");
                 //labels[i] = labels[i].substring(6,8) + "시";
             }
             drawChart(labels, out, in);

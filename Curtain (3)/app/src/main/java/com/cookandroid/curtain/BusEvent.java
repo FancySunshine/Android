@@ -10,7 +10,7 @@ public class BusEvent {
     String led, auto_led, auto_step;
     String lux;
     boolean flag = false;
-
+    boolean tf = true;
 
     public BusEvent(int curtain, String led, int bright, String auto_step, String auto_led) {
 
@@ -30,6 +30,10 @@ public class BusEvent {
     public BusEvent(String lux){
         this.lux = lux;
         this.flag = false;
+    }
+
+    public BusEvent(boolean tf){
+        this.tf = tf;
     }
 
 }

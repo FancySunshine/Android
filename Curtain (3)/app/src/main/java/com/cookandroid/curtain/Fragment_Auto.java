@@ -18,9 +18,13 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.github.mikephil.charting.data.Entry;
 import com.google.android.material.button.MaterialButton;
+import com.squareup.otto.Subscribe;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -238,5 +242,14 @@ public class Fragment_Auto extends Fragment {
     }
 
 
+    @Subscribe
+    public void busStop(BusEvent busEvent) throws JSONException {
+
+        if(busEvent.tf == false)
+            auto_sw.setChecked(false);
+
+
+
+    }
 }
 
