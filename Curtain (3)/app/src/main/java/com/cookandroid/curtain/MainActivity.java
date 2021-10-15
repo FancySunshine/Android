@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
 */
 // 서버와 통신하기 위한 MQTT 클라이언트 생성
         int rnd = (int) (Math.random() * 1000);
-        mqttClient = new MqttAndroidClient(this, "tcp://192.168.99.248:1883", "Android" + rnd);
+        mqttClient = new MqttAndroidClient(this, "tcp://192.168.99.241:1883", "Android" + rnd);
 
 
         try {
@@ -246,12 +246,12 @@ public class MainActivity extends AppCompatActivity {
                 // Lux 데이터 값 받아오기
                 else if(topic.equals("lux/graph")){
                     JSONArray msg = new JSONArray(message.toString());
-                    int currentBrightness = Integer.parseInt(msg.getJSONObject(msg.length() -1).getString("in"));
+                    int currentBrightness = Integer.parseInt(msg.getJSONObject(0).getString("in"));
                     //현재 방안 조도 값
                     now_lux.setText("실내 조도 : " + currentBrightness);
 
                     //조도값에 따른 단계 표시
-                    switch(currentBrightness/200) {
+                    switch(currentBrightness/80) {
                         case 0:textBrightness.setText("매우어두움"); break;
                         case 1:textBrightness.setText("어두움"); break;
                         case 2:textBrightness.setText("보통"); break;
